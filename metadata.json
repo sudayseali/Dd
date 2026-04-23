@@ -1,0 +1,6 @@
+{
+  "name": "Telegram Mini App Auth",
+  "description": "A Telegram Web App demonstrating user phone collection and an admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
