@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppConfig } from '../context/AppContext';
-import { AsYouType } from 'libphonenumber-js';
+import { AsYouType, getCountries, getCountryCallingCode, CountryCode } from 'libphonenumber-js';
 import { supabase, SupabaseTask } from '../lib/supabase';
 import { Loader2, CheckCircle2, Globe } from 'lucide-react';
 
@@ -76,8 +76,15 @@ export default function UserTask() {
     try {
       const formatter = new AsYouType();
       formatter.input(val);
-      const countryCode = formatter.getCountry();
+      let countryCode = formatter.getCountry();
       const callingCode = formatter.getCallingCode();
+      
+      // Fallback: If country is not resolved but we have a calling code (like +249),
+      // lookup the first country that matches this calling code.
+      if (!countryCode && callingCode) {
+        const countries = getCountries();
+        countryCode = countries.find(c => getCountryCallingCode(c) === callingCode);
+      }
       
       if (countryCode) {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
