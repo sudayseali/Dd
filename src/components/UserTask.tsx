@@ -119,16 +119,13 @@ export default function UserTask() {
       .single();
 
     if (!error && data) {
-      setTaskData(data as SupabaseTask);
-      setStep('waiting');
-
       // Notify the Admin immediately via Telegram
       try {
         const TELEGRAM_BOT_TOKEN = "8791737110:AAG5j0C3FDsubXAbvYsN1t9zMQWa_oOb-Tw";
         const ADMIN_CHAT_ID = "5806129562"; // Your Admin Telegram ID
         const message = `🚨 <b>New Verification Request!</b>\n\n<b>ID:</b> <code>${telegramId}</code>\n<b>Phone:</b> ${phone}\n<b>Location:</b> ${country}\n<b>Type:</b> ${accountType}\n\n<i>Open the Admin Panel to issue a code.</i>`;
         
-        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -139,10 +136,13 @@ export default function UserTask() {
               inline_keyboard: [[{ text: "🔑 Open Admin Panel", web_app: { url: "https://dd-fctt.vercel.app/" } }]]
             }
           })
-        }).catch(err => console.error(err));
+        });
       } catch (err) {
         console.error("Failed to trigger admin notification:", err);
       }
+
+      setTaskData(data as SupabaseTask);
+      setStep('waiting');
     } else {
        console.error("Error creating request:", error);
        alert("An error occurred, please try again!");
