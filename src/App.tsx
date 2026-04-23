@@ -30,7 +30,7 @@ function AppContent() {
           <h1 className="text-2xl font-bold text-zinc-100 mb-3 tracking-tight">Access Restricted</h1>
           
           <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
-            Nidaamka amniga wuxuu ogaaday inaad ka soo galayso meel ka baxsan Telegram. Si aad u isticmaasho app-kan, fadlan ka fur dhexdiisa <span className="text-emerald-400 font-medium">Telegram App</span>.
+            Nidaamka amniga wuxuu ogaaday isku day gelitaan oo aan la oggolayn ama xogtaadii Telegram lama helin. Si aad u isticmaasho app-kan, <span className="text-emerald-400 font-medium">fadlan ka fur batoonka "Open App" (Menu Button) ee dhex yaalla Bot-kaaga</span>. Ha gujin link-ga tooska ah.
           </p>
 
           <div className="bg-zinc-950 rounded-xl p-4 border border-zinc-800/80 flex items-start text-left space-x-3">
