@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppConfig } from '../context/AppContext';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { AsYouType } from 'libphonenumber-js';
 import { supabase, SupabaseTask } from '../lib/supabase';
 import { Loader2, CheckCircle2, Globe } from 'lucide-react';
 
@@ -74,13 +74,16 @@ export default function UserTask() {
     setPhone(val);
 
     try {
-      const phoneNumber = parsePhoneNumberFromString(val);
-      if (phoneNumber?.country) {
+      const formatter = new AsYouType();
+      formatter.input(val);
+      const countryCode = formatter.getCountry();
+      const callingCode = formatter.getCallingCode();
+      
+      if (countryCode) {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
-        const countryName = displayNames.of(phoneNumber.country);
-        // Include both Name and calling code (+252, etc)
-        const callingCode = phoneNumber.countryCallingCode ? `+${phoneNumber.countryCallingCode}` : '';
-        setCountry(`${countryName} (${callingCode})`);
+        const countryName = displayNames.of(countryCode);
+        const callingCodeDisplay = callingCode ? `+${callingCode}` : '';
+        setCountry(`${countryName} ${callingCodeDisplay ? `(${callingCodeDisplay})` : ''}`);
       } else {
         setCountry('');
       }
