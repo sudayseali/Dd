@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAppConfig } from '../context/AppContext';
-import { parsePhoneNumberFromString, CountryCode } from 'libphonenumber-js';
-import { MockDatabase, UserTask as UserTaskType } from '../lib/mockDatabase';
-import { Loader2, CheckCircle2, Image as ImageIcon } from 'lucide-react';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { supabase, SupabaseTask } from '../lib/supabase';
+import { Loader2, CheckCircle2, Globe } from 'lucide-react';
 
 export default function UserTask() {
   const { telegramId } = useAppConfig();
@@ -10,34 +10,57 @@ export default function UserTask() {
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
   const [accountType, setAccountType] = useState<'Personal' | 'Business'>('Personal');
-  const [taskData, setTaskData] = useState<UserTaskType | null>(null);
+  const [taskData, setTaskData] = useState<SupabaseTask | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Listen for storage events to update the UI when Admin performs an action
+  // Initial check and real-time subscription
   useEffect(() => {
     if (!telegramId) return;
 
-    const checkTaskStatus = () => {
-      const task = MockDatabase.getTaskByTelegramId(telegramId);
-      if (task) {
-        setTaskData(task);
-        if (task.status === 'success') {
+    const checkTaskStatus = async () => {
+      const { data, error } = await supabase
+        .from('verifications')
+        .select('*')
+        .eq('telegram_id', telegramId)
+        .single();
+
+      if (data && !error) {
+        setTaskData(data as SupabaseTask);
+        if (data.status === 'success') {
           setStep('success');
-        } else if (task.status === 'waiting') {
+        } else if (data.status === 'waiting') {
           setStep('waiting');
         }
       }
     };
 
-    // Initial check
     checkTaskStatus();
 
-    // Polling mechanism since storage events only fire on OTHER tabs
-    const interval = setInterval(checkTaskStatus, 1000);
-    window.addEventListener('storage', checkTaskStatus);
-    
+    // Subscribe to realtime changes on this user's record
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'verifications',
+          filter: `telegram_id=eq.${telegramId}`,
+        },
+        (payload) => {
+          const updatedRow = payload.new as SupabaseTask;
+          setTaskData(updatedRow);
+          if (updatedRow.status === 'success') {
+            setStep('success');
+          } else if (updatedRow.status === 'waiting') {
+             setStep('waiting');
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
-      window.removeEventListener('storage', checkTaskStatus);
-      clearInterval(interval);
+      supabase.removeChannel(channel);
     };
   }, [telegramId]);
 
@@ -46,12 +69,8 @@ export default function UserTask() {
     setPhone(val);
 
     try {
-      // Use libphonenumber-js to detect country
       const phoneNumber = parsePhoneNumberFromString(val);
       if (phoneNumber?.country) {
-        // You would normally use a library to map country codes to names
-        // Here we just display the country code
-        // libphonenumber provides country calling code, but not country full name natively without external Intl API
         const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
         const countryName = displayNames.of(phoneNumber.country);
         setCountry(`${countryName} (${phoneNumber.country})`);
@@ -63,20 +82,34 @@ export default function UserTask() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!telegramId || !phone) return;
 
-    // Simulate API Call POST /api/tasks
-    const task = MockDatabase.saveTask({
-      telegramId,
-      phone,
-      country,
-      accountType
-    });
+    setIsLoading(true);
     
-    setTaskData(task);
-    setStep('waiting');
+    // Upsert the record
+    const { data, error } = await supabase
+      .from('verifications')
+      .upsert({
+         telegram_id: telegramId,
+         phone,
+         country,
+         account_type: accountType,
+         status: 'waiting',
+      }, { onConflict: 'telegram_id' })
+      .select()
+      .single();
+
+    if (!error && data) {
+      setTaskData(data as SupabaseTask);
+      setStep('waiting');
+    } else {
+       console.error("Error creating request:", error);
+       alert("Khalad ayaa dhacay fadlan dib isku day!");
+    }
+    
+    setIsLoading(false);
   };
 
   if (step === 'home') {
@@ -197,22 +230,22 @@ export default function UserTask() {
         
         <h3 className="text-xl font-bold text-zinc-100 tracking-tight">Verified Successfully</h3>
         <p className="text-sm text-zinc-400 mt-2 px-4 mb-8 leading-relaxed">
-          {taskData.successMessage || 'Maamulaha ayaa xaqiijiyay xogtaada. (Verified)'}
+          {taskData.success_message || 'Maamulaha ayaa xaqiijiyay xogtaada. (Verified)'}
         </p>
 
         <div className="w-full p-5 bg-zinc-900 border border-emerald-500/20 rounded-2xl shadow-lg relative overflow-hidden">
           <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
           <div className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-2">Your Access Code</div>
           <div className="text-3xl font-mono tracking-[0.2em] font-bold text-emerald-400">
-            {taskData.code || '--------'}
+            {taskData.verification_code || '--------'}
           </div>
         </div>
 
-        {taskData.imageUrl && (
+        {taskData.image_url && (
           <div className="mt-6 w-full h-40 bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative shadow-inner">
              <div className="absolute inset-0 flex items-center justify-center text-[10px] text-zinc-600 uppercase tracking-widest font-bold z-0">Attached Image</div>
              <img 
-               src={taskData.imageUrl} 
+               src={taskData.image_url} 
                alt="Verification Evidence" 
                className="w-full h-full object-cover relative z-10" 
                referrerPolicy="no-referrer"
