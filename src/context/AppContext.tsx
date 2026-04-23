@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-// Using a list of mock admin IDs
-export const ADMIN_IDS = ['123456789', 'admin_1'];
+// Using the provided admin Telegram ID
+export const ADMIN_IDS = ['5806129562'];
 
 interface AppContextType {
   telegramId: string | null;
