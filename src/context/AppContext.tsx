@@ -18,46 +18,58 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Strictly require Telegram WebApp environment
-    let retryCount = 0;
+    let timeoutId: any;
     
-    const initTelegram = () => {
-      let id = null;
-      let user = null;
+    const tryInit = (retriesLeft: number) => {
+      const webApp = window.Telegram?.WebApp;
       
-      if (window.Telegram?.WebApp) {
-        const webApp = window.Telegram.WebApp;
+      if (webApp) {
+        webApp.expand();
         
-        // Ensure app is expanded
-        webApp.expand(); 
-        
-        // Wait for initData to populate
-        if (webApp.initDataUnsafe?.user?.id) {
-          id = String(webApp.initDataUnsafe.user.id);
-          user = webApp.initDataUnsafe.user;
-          webApp.ready();
-          
-          setTelegramId(id);
+        // Sometimes user id is populated shortly after init
+        const user = webApp.initDataUnsafe?.user;
+        if (user && user.id) {
+          const idStr = String(user.id);
+          setTelegramId(idStr);
           setTgUser(user);
+          webApp.ready();
           setIsReady(true);
-        } else if (retryCount < 10) {
-          // If the object exists but user data isn't loaded yet, try again in 100ms
-          retryCount++;
-          setTimeout(initTelegram, 100);
-        } else {
-           // We are in a browser or outside the proper bot context
-           setIsReady(true);
+          return;
         }
-      } else if (retryCount < 10) {
-         retryCount++;
-         setTimeout(initTelegram, 100);
+      }
+      
+      // Fallback: Check if Telegram passed parameters in URL hash manually (sometimes happens in external clients)
+      try {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const initDataRaw = hashParams.get('tgWebAppData');
+        if (initDataRaw) {
+          const params = new URLSearchParams(initDataRaw);
+          const userStr = params.get('user');
+          if (userStr) {
+            const userObj = JSON.parse(decodeURIComponent(userStr));
+            if (userObj && userObj.id) {
+              setTelegramId(String(userObj.id));
+              setTgUser(userObj);
+              setIsReady(true);
+              return;
+            }
+          }
+        }
+      } catch (e) {
+         // ignore parsing errors
+      }
+
+      if (retriesLeft > 0) {
+        timeoutId = setTimeout(() => tryInit(retriesLeft - 1), 200);
       } else {
-         // No telegram object at all
-         setIsReady(true);
+        // Fallback or finish
+        setIsReady(true);
       }
     };
 
-    initTelegram();
+    tryInit(15); // Try for up to 3 seconds (15 * 200ms)
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const isAdmin = telegramId ? ADMIN_IDS.includes(telegramId) : false;
