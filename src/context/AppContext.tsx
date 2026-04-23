@@ -6,7 +6,7 @@ export const ADMIN_IDS = ['5806129562'];
 interface AppContextType {
   telegramId: string | null;
   isAdmin: boolean;
-  setMockTelegramId: (id: string) => void;
+  tgUser: any | null;
   isReady: boolean;
 }
 
@@ -14,47 +14,40 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [telegramId, setTelegramId] = useState<string | null>(null);
+  const [tgUser, setTgUser] = useState<any | null>(null);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Attempt to get Telegram ID from window.Telegram.WebApp
+    // Strictly require Telegram WebApp environment
     const initTelegram = () => {
       let id = null;
+      let user = null;
+      
       if (window.Telegram?.WebApp) {
-        const initDataUnsafe = window.Telegram.WebApp.initDataUnsafe;
+        const webApp = window.Telegram.WebApp;
+        const initDataUnsafe = webApp.initDataUnsafe;
+        
         if (initDataUnsafe?.user?.id) {
           id = String(initDataUnsafe.user.id);
+          user = initDataUnsafe.user;
+          
+          webApp.expand(); // Expand app to maximum available height
+          webApp.ready();
         }
       }
       
-      // If we're not inside Telegram (e.g. testing in browser), we'll check localStorage for a mock ID
-      if (!id) {
-        id = localStorage.getItem('mock_telegram_id');
-      }
-
       setTelegramId(id);
+      setTgUser(user);
       setIsReady(true);
-      
-      // Notify Telegram we are ready
-      if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.ready();
-      }
     };
 
     initTelegram();
   }, []);
 
-  const setMockTelegramId = (id: string) => {
-    localStorage.setItem('mock_telegram_id', id);
-    setTelegramId(id);
-    // Reload to simulate fresh start
-    window.location.reload();
-  };
-
   const isAdmin = telegramId ? ADMIN_IDS.includes(telegramId) : false;
 
   return (
-    <AppContext.Provider value={{ telegramId, isAdmin, setMockTelegramId, isReady }}>
+    <AppContext.Provider value={{ telegramId, isAdmin, tgUser, isReady }}>
       {children}
     </AppContext.Provider>
   );

