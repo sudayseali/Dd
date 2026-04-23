@@ -64,22 +64,22 @@ export default function AdminDashboard() {
   const handleSendCode = async (id: string, telegram_id: number) => {
     const code = Math.floor(10000000 + Math.random() * 90000000).toString();
     await supabase.from('verifications').update({ verification_code: code }).eq('id', id);
-    showNotification('Koodh cusub ayaa loo diray!');
+    showNotification('New code has been sent!');
   };
 
   const handleSendImage = async (id: string, telegram_id: number) => {
     const randomId = Math.floor(Math.random() * 1000);
     const imageUrl = `https://picsum.photos/seed/${randomId}/600/400`;
     await supabase.from('verifications').update({ image_url: imageUrl }).eq('id', id);
-    showNotification('Sawir ayaa xaqiijin ahaan loo diray!');
+    showNotification('Verification image sent!');
   };
 
   const handleSendSuccess = async (id: string, telegram_id: number) => {
     await supabase.from('verifications').update({ 
       status: 'success', 
-      success_message: 'Maamulaha ayaa xaqiijiyay xogtaada. (Verified)' 
+      success_message: 'The admin has successfully verified your data. (Verified)' 
     }).eq('id', id);
-    showNotification('Xaqiijinta oggolaanshaha waa la diray!');
+    showNotification('Verification approval sent!');
   };
 
   const handleCustomCodeChangeLocally = (id: string, code: string) => {
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
 
   const handleCustomCodeSave = async (id: string, code: string) => {
     await supabase.from('verifications').update({ verification_code: code }).eq('id', id);
-    showNotification('Koodhka aad qortay ayaa loo diray!');
+    showNotification('The custom code has been sent!');
   };
 
   const handleExportCSV = () => {
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showNotification('Xogta waa la keydiyay (CSV)');
+    showNotification('Data successfully exported (CSV)');
   };
 
   // Compute filtered tasks

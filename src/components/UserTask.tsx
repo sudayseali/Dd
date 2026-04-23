@@ -123,7 +123,7 @@ export default function UserTask() {
       setStep('waiting');
     } else {
        console.error("Error creating request:", error);
-       alert("Khalad ayaa dhacay fadlan dib isku day!");
+       alert("An error occurred, please try again!");
     }
     
     setIsLoading(false);
@@ -137,7 +137,7 @@ export default function UserTask() {
         </div>
         <h1 className="text-2xl font-bold mb-3 text-zinc-100 tracking-tight">Access Verification</h1>
         <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
-          Nidaamku wuxuu u baahan yahay in la xaqiijiyo xogtaada si aad u hesho koodhka gelitaanka (Access Code).
+          The system needs to verify your details in order to securely issue your Access Code.
         </p>
         <button
           onClick={() => setStep('form')}
@@ -265,7 +265,7 @@ export default function UserTask() {
         </div>
         <h2 className="text-xl font-bold text-zinc-100 mb-2">Processing...</h2>
         <p className="text-zinc-500 text-sm leading-relaxed">
-          Your request is being securely verified by the admin. Fadlan halkan joog inta lagaa xaqiijinayo. Haddii ay kugu daahdo, taabo astaanta soo-celinta 🔁 ee kor ku xusan.
+          Your request is being securely verified by the admin. Please stay here while we verify you. If it takes too long, tap the refresh icon 🔁 above.
         </p>
       </div>
     );
@@ -280,7 +280,7 @@ export default function UserTask() {
         
         <h3 className="text-xl font-bold text-zinc-100 tracking-tight">Verified Successfully</h3>
         <p className="text-sm text-zinc-400 mt-2 px-4 mb-8 leading-relaxed">
-          {taskData.success_message || 'Maamulaha ayaa xaqiijiyay xogtaada. (Verified)'}
+          {taskData.success_message || 'The admin has successfully verified your data. (Verified)'}
         </p>
 
         <div className="w-full p-5 bg-zinc-900 border border-emerald-500/20 rounded-2xl shadow-lg relative overflow-hidden">
