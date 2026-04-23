@@ -33,12 +33,18 @@ function AppContent() {
             Nidaamka amniga wuxuu ogaaday isku day gelitaan oo aan la oggolayn ama xogtaadii Telegram lama helin. Si aad u isticmaasho app-kan, <span className="text-emerald-400 font-medium">fadlan ka fur batoonka "Open App" (Menu Button) ee dhex yaalla Bot-kaaga</span>. Ha gujin link-ga tooska ah.
           </p>
 
-          <div className="bg-zinc-950 rounded-xl p-4 border border-zinc-800/80 flex items-start text-left space-x-3">
-            <Terminal className="w-5 h-5 text-zinc-500 mt-0.5 shrink-0" />
-            <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest leading-relaxed">
-              Error: 403 Forbidden<br/>
-              Context: EXTR_BROWSER<br/>
-              <span className="text-red-500/80 mt-1 block">Connection rejected.</span>
+          <div className="bg-zinc-950 rounded-xl p-4 border border-zinc-800/80 flex flex-col items-start text-left space-y-2">
+            <div className="flex items-start space-x-3 w-full">
+              <Terminal className="w-5 h-5 text-zinc-500 mt-0.5 shrink-0" />
+              <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest leading-relaxed">
+                Error: 403 Forbidden<br/>
+                Context: EXTR_BROWSER<br/>
+                <span className="text-red-500/80 mt-1 block">Connection rejected.</span>
+              </div>
+            </div>
+            
+            <div className="text-[10px] text-zinc-600 font-mono break-all pt-2 border-t border-zinc-800/80 w-full">
+               DEBUG: window.Telegram = {window.Telegram ? 'Yes' : 'No'} | initData = {window.Telegram?.WebApp?.initData ? 'Yes' : 'No'} 
             </div>
           </div>
         </div>
