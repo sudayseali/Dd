@@ -70,11 +70,11 @@ export default function AdminDashboard() {
     }).eq('id', id);
   };
 
-  const handleCustomCode = async (id: string, telegram_id: number, code: string) => {
-    // Only update optimistically in UI until they hit enter/save, otherwise we send too many requests.
-    // For simplicity, we'll let this trigger on blur or a dedicated save button, 
-    // but the original code updated onChange which is bad for real DB.
-    // We'll leave it as onChange for now but this is a warning.
+  const handleCustomCodeChangeLocally = (id: string, code: string) => {
+    setTasks((prev) => prev.map(t => t.id === id ? { ...t, verification_code: code } : t));
+  };
+
+  const handleCustomCodeSave = async (id: string, code: string) => {
     await supabase.from('verifications').update({ verification_code: code }).eq('id', id);
   };
 
@@ -283,7 +283,8 @@ export default function AdminDashboard() {
                           placeholder="Code" 
                           className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-8 pr-3 py-1.5 text-sm font-mono tracking-widest text-emerald-400 focus:border-emerald-500 outline-none"
                           value={task.verification_code || ''}
-                          onChange={(e) => handleCustomCode(task.id, task.telegram_id, e.target.value)}
+                          onChange={(e) => handleCustomCodeChangeLocally(task.id, e.target.value)}
+                          onBlur={(e) => handleCustomCodeSave(task.id, e.target.value)}
                         />
                       </div>
                       <button 
