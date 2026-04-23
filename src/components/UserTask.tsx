@@ -65,7 +65,12 @@ export default function UserTask() {
   }, [telegramId]);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+    let val = e.target.value;
+    
+    // Auto-prepend + if it doesn't exist and they start typing a number that is not zero
+    if (val && !val.startsWith('+') && !val.startsWith('0')) {
+        val = '+' + val;
+    }
     setPhone(val);
 
     try {
@@ -73,7 +78,9 @@ export default function UserTask() {
       if (phoneNumber?.country) {
         const displayNames = new Intl.DisplayNames(['en'], { type: 'region' });
         const countryName = displayNames.of(phoneNumber.country);
-        setCountry(`${countryName} (${phoneNumber.country})`);
+        // Include both Name and calling code (+252, etc)
+        const callingCode = phoneNumber.countryCallingCode ? `+${phoneNumber.countryCallingCode}` : '';
+        setCountry(`${countryName} (${callingCode})`);
       } else {
         setCountry('');
       }

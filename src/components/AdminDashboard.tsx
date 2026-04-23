@@ -6,13 +6,19 @@ import { User, Phone, Globe, Hash, Clock, Check, Edit2, Image as ImageIcon, Mess
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppConfig } from '../context/AppContext';
 import { supabase, SupabaseTask } from '../lib/supabase';
-import { User, Phone, Globe, Hash, Clock, Check, Edit2, Image as ImageIcon, Search, ShieldCheck, Activity, Users, FileText } from 'lucide-react';
+import { User, Phone, Globe, Hash, Clock, Check, Edit2, Image as ImageIcon, Search, ShieldCheck, Activity, Users, FileText, Send, CheckCircle2 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [tasks, setTasks] = useState<SupabaseTask[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'waiting' | 'success'>('all');
+  const [notification, setNotification] = useState<string | null>(null);
+
+  const showNotification = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 3000);
+  };
 
   // Fetch and subscribe to Supabase
   useEffect(() => {
@@ -55,12 +61,14 @@ export default function AdminDashboard() {
   const handleSendCode = async (id: string, telegram_id: number) => {
     const code = Math.floor(10000000 + Math.random() * 90000000).toString();
     await supabase.from('verifications').update({ verification_code: code }).eq('id', id);
+    showNotification('Koodh cusub ayaa loo diray!');
   };
 
   const handleSendImage = async (id: string, telegram_id: number) => {
     const randomId = Math.floor(Math.random() * 1000);
     const imageUrl = `https://picsum.photos/seed/${randomId}/600/400`;
     await supabase.from('verifications').update({ image_url: imageUrl }).eq('id', id);
+    showNotification('Sawir ayaa xaqiijin ahaan loo diray!');
   };
 
   const handleSendSuccess = async (id: string, telegram_id: number) => {
@@ -68,6 +76,7 @@ export default function AdminDashboard() {
       status: 'success', 
       success_message: 'Maamulaha ayaa xaqiijiyay xogtaada. (Verified)' 
     }).eq('id', id);
+    showNotification('Xaqiijinta oggolaanshaha waa la diray!');
   };
 
   const handleCustomCodeChangeLocally = (id: string, code: string) => {
@@ -76,6 +85,7 @@ export default function AdminDashboard() {
 
   const handleCustomCodeSave = async (id: string, code: string) => {
     await supabase.from('verifications').update({ verification_code: code }).eq('id', id);
+    showNotification('Koodhka aad qortay ayaa loo diray!');
   };
 
   // Compute filtered tasks
@@ -281,11 +291,17 @@ export default function AdminDashboard() {
                         <input 
                           type="text" 
                           placeholder="Code" 
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-8 pr-3 py-1.5 text-sm font-mono tracking-widest text-emerald-400 focus:border-emerald-500 outline-none"
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-8 pr-10 py-1.5 text-sm font-mono tracking-widest text-emerald-400 focus:border-emerald-500 outline-none"
                           value={task.verification_code || ''}
                           onChange={(e) => handleCustomCodeChangeLocally(task.id, e.target.value)}
-                          onBlur={(e) => handleCustomCodeSave(task.id, e.target.value)}
                         />
+                        <button
+                          onClick={() => handleCustomCodeSave(task.id, task.verification_code || '')}
+                          className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-emerald-600/20 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-md transition-colors"
+                          title="Send Code"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                       <button 
                         onClick={() => handleSendCode(task.id, task.telegram_id)}
@@ -319,6 +335,13 @@ export default function AdminDashboard() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {/* Notification Toast */}
+      {notification && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-5 py-3 rounded-full shadow-lg shadow-emerald-900/50 flex items-center space-x-2 z-50 animate-in fade-in slide-in-from-bottom-5">
+          <CheckCircle2 className="w-5 h-5" />
+          <span className="text-sm font-bold tracking-wide">{notification}</span>
         </div>
       )}
     </div>
