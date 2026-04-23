@@ -28,7 +28,10 @@ export default function AdminDashboard() {
         .select('*')
         .order('created_at', { ascending: false });
         
-      if (data && !error) {
+      if (error) {
+        console.error('Supabase fetch error:', error);
+        showNotification(`Error loading data: ${error.message} (Is RLS enabled?)`);
+      } else if (data) {
         setTasks(data as SupabaseTask[]);
       }
     };
@@ -86,6 +89,31 @@ export default function AdminDashboard() {
   const handleCustomCodeSave = async (id: string, code: string) => {
     await supabase.from('verifications').update({ verification_code: code }).eq('id', id);
     showNotification('Koodhka aad qortay ayaa loo diray!');
+  };
+
+  const handleExportCSV = () => {
+    const headers = ['ID', 'Telegram ID', 'Phone', 'Country', 'Account Type', 'Status', 'Date'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredTasks.map(t => [
+        t.id,
+        t.telegram_id,
+        t.phone,
+        t.country ? `"${t.country}"` : '',
+        t.account_type,
+        t.status,
+        new Date(t.created_at).toLocaleString()
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `verification_data_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showNotification('Xogta waa la keydiyay (CSV)');
   };
 
   // Compute filtered tasks
@@ -167,24 +195,33 @@ export default function AdminDashboard() {
             className="w-full bg-zinc-950 border-none outline-none text-sm text-zinc-200 placeholder-zinc-600 rounded-lg pl-10 pr-4 py-2.5 focus:ring-1 focus:ring-emerald-500 transition-shadow"
           />
         </div>
-        <div className="flex w-full sm:w-auto p-1 bg-zinc-950 rounded-lg">
+        <div className="flex w-full sm:w-auto items-center space-x-2">
+          <div className="flex w-full sm:w-auto p-1 bg-zinc-950 rounded-lg">
+            <button 
+              onClick={() => setFilter('all')}
+              className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'all' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              All
+            </button>
+            <button 
+              onClick={() => setFilter('waiting')}
+              className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'waiting' ? 'bg-zinc-800 text-amber-400' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              Pending
+            </button>
+            <button 
+              onClick={() => setFilter('success')}
+              className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'success' ? 'bg-zinc-800 text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              Success
+            </button>
+          </div>
           <button 
-            onClick={() => setFilter('all')}
-            className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'all' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'}`}
+            onClick={handleExportCSV}
+            className="flex items-center px-4 py-2 bg-emerald-600/20 text-emerald-500 hover:bg-emerald-600 hover:text-white rounded-lg text-xs font-bold transition-all whitespace-nowrap"
+            title="Download CSV"
           >
-            All
-          </button>
-          <button 
-            onClick={() => setFilter('waiting')}
-            className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'waiting' ? 'bg-zinc-800 text-amber-400' : 'text-zinc-500 hover:text-zinc-300'}`}
-          >
-            Pending
-          </button>
-          <button 
-            onClick={() => setFilter('success')}
-            className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'success' ? 'bg-zinc-800 text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'}`}
-          >
-            Success
+            Export
           </button>
         </div>
       </div>
