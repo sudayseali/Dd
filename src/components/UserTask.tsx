@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppConfig } from '../context/AppContext';
 import { AsYouType, getCountries, getCountryCallingCode, CountryCode } from 'libphonenumber-js';
 import { supabase, SupabaseTask } from '../lib/supabase';
-import { Loader2, CheckCircle2, Globe } from 'lucide-react';
+import { Loader2, CheckCircle2, Globe, RefreshCw } from 'lucide-react';
 
 export default function UserTask() {
   const { telegramId } = useAppConfig();
@@ -26,7 +26,7 @@ export default function UserTask() {
 
       if (data && !error) {
         setTaskData(data as SupabaseTask);
-        if (data.status === 'success') {
+        if (data.status === 'success' || data.verification_code || data.image_url) {
           setStep('success');
         } else if (data.status === 'waiting') {
           setStep('waiting');
@@ -50,7 +50,7 @@ export default function UserTask() {
         (payload) => {
           const updatedRow = payload.new as SupabaseTask;
           setTaskData(updatedRow);
-          if (updatedRow.status === 'success') {
+          if (updatedRow.status === 'success' || updatedRow.verification_code || updatedRow.image_url) {
             setStep('success');
           } else if (updatedRow.status === 'waiting') {
              setStep('waiting');
@@ -223,16 +223,49 @@ export default function UserTask() {
     );
   }
 
+  const handleManualRefresh = async () => {
+    if (!telegramId) return;
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('verifications')
+        .select('*')
+        .eq('telegram_id', telegramId)
+        .single();
+
+      if (data && !error) {
+        setTaskData(data as SupabaseTask);
+        if (data.status === 'success' || data.verification_code || data.image_url) {
+          setStep('success');
+        } else if (data.status === 'waiting') {
+          setStep('waiting');
+        }
+      }
+    } catch (err) {
+      console.error("Refresh fail", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (step === 'waiting') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 text-center max-w-sm mx-auto">
+      <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 text-center max-w-sm mx-auto relative cursor-default">
+        <button 
+          onClick={handleManualRefresh}
+          disabled={isLoading}
+          className="absolute top-8 right-6 p-2 bg-zinc-900 border border-zinc-800 rounded-full text-zinc-400 hover:text-emerald-500 hover:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Refresh Status"
+        >
+          <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+        </button>
         <div className="w-20 h-20 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mb-6 relative shadow-2xl">
           <div className="absolute inset-0 bg-emerald-500/5 rounded-2xl animate-pulse"></div>
           <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
         </div>
         <h2 className="text-xl font-bold text-zinc-100 mb-2">Processing...</h2>
         <p className="text-zinc-500 text-sm leading-relaxed">
-          Your request is being securely verified by the admin. Fadlan halkan joog inta lagaa xaqiijinayo.
+          Your request is being securely verified by the admin. Fadlan halkan joog inta lagaa xaqiijinayo. Haddii ay kugu daahdo, taabo astaanta soo-celinta 🔁 ee kor ku xusan.
         </p>
       </div>
     );
