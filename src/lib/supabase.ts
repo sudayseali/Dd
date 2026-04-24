@@ -12,10 +12,14 @@ export interface SupabaseTask {
   phone: string;
   country: string;
   account_type: 'Personal' | 'Business';
+  payment_method?: 'TRX' | 'Payeer';
+  transaction_id?: string;
   verification_code?: string;
   image_url?: string;
   status: 'waiting' | 'success' | 'error';
   success_message?: string;
+  balance?: number;
+  referred_by?: string;
   created_at: string;
   updated_at: string;
 }

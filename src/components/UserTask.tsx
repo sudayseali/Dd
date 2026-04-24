@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useAppConfig } from '../context/AppContext';
 import { AsYouType, getCountries, getCountryCallingCode, CountryCode } from 'libphonenumber-js';
 import { supabase, SupabaseTask } from '../lib/supabase';
-import { Loader2, CheckCircle2, Globe, RefreshCw, XCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, Globe, RefreshCw, XCircle, Wallet, Users, Copy } from 'lucide-react';
 
 export default function UserTask() {
-  const { telegramId } = useAppConfig();
+  const { telegramId, startParam } = useAppConfig();
   const [step, setStep] = useState<'home' | 'form' | 'waiting' | 'success'>('home');
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
   const [accountType, setAccountType] = useState<'Personal' | 'Business'>('Personal');
+  const [paymentMethod, setPaymentMethod] = useState<'TRX' | 'Payeer'>('TRX');
+  const [transactionId, setTransactionId] = useState('');
   const [taskData, setTaskData] = useState<SupabaseTask | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
 
   // Initial check and real-time subscription
   useEffect(() => {
@@ -101,7 +104,7 @@ export default function UserTask() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!telegramId || !phone) return;
+    if (!telegramId || !phone || !transactionId) return;
 
     setIsLoading(true);
     
@@ -113,10 +116,13 @@ export default function UserTask() {
          phone,
          country,
          account_type: accountType,
+         payment_method: paymentMethod,
+         transaction_id: transactionId,
          status: 'waiting',
          verification_code: null,
          image_url: null,
-         success_message: null
+         success_message: null,
+         referred_by: startParam || null
       }, { onConflict: 'telegram_id' })
       .select()
       .single();
@@ -126,7 +132,7 @@ export default function UserTask() {
       try {
         const TELEGRAM_BOT_TOKEN = "8791737110:AAG5j0C3FDsubXAbvYsN1t9zMQWa_oOb-Tw";
         const ADMIN_CHAT_ID = "5806129562"; // Your Admin Telegram ID
-        const message = `🚨 <b>New Verification Request!</b>\n\n<b>ID:</b> <code>${telegramId}</code>\n<b>Phone:</b> ${phone}\n<b>Location:</b> ${country}\n<b>Type:</b> ${accountType}\n\n<i>Open the Admin Panel to issue a code.</i>`;
+        const message = `🚨 <b>New Verification Request!</b>\n\n<b>ID:</b> <code>${telegramId}</code>\n<b>Phone:</b> ${phone}\n<b>Location:</b> ${country}\n<b>Type:</b> ${accountType}\n<b>Method:</b> ${paymentMethod}\n<b>TxID:</b> <code>${transactionId}</code>\n\n<i>Open the Admin Panel to verify payment and issue a code.</i>`;
         
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: "POST",
@@ -237,11 +243,74 @@ export default function UserTask() {
             </div>
           </div>
 
+          {/* Payment Section */}
+          <div className="space-y-3 pt-2">
+            <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Payment Method <span className="text-emerald-500">*</span></label>
+            <div className="flex space-x-4 bg-zinc-900 p-1.5 rounded-xl border border-zinc-800 shadow-sm">
+              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${paymentMethod === 'TRX' ? 'bg-indigo-600/20 text-indigo-400 shadow-sm border border-indigo-500/30' : 'text-zinc-500 hover:text-zinc-400 bg-zinc-800/50'}`}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="TRX"
+                  checked={paymentMethod === 'TRX'}
+                  className="hidden"
+                  onChange={(e) => setPaymentMethod(e.target.value as any)}
+                />
+                <span>TRON (TRX)</span>
+              </label>
+              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${paymentMethod === 'Payeer' ? 'bg-indigo-600/20 text-indigo-400 shadow-sm border border-indigo-500/30' : 'text-zinc-500 hover:text-zinc-400 bg-zinc-800/50'}`}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="Payeer"
+                  checked={paymentMethod === 'Payeer'}
+                  className="hidden"
+                  onChange={(e) => setPaymentMethod(e.target.value as any)}
+                />
+                <span>Payeer</span>
+              </label>
+            </div>
+
+            <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 shadow-sm space-y-3 mt-2">
+              <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1 border-b border-zinc-800/50 pb-2">
+                Send Payment To:
+              </div>
+              {paymentMethod === 'TRX' ? (
+                <div className="text-center pt-2 pb-1">
+                  <div className="text-emerald-400 font-mono text-base md:text-lg font-bold select-all bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/20">
+                    TMH8nN... (YOUR_TRX_ADDRESS)
+                  </div>
+                  <div className="text-zinc-500 text-xs mt-2 font-medium">Network: TRC20</div>
+                </div>
+              ) : (
+                <div className="text-center pt-2 pb-1">
+                  <div className="text-indigo-400 font-mono text-base md:text-lg font-bold select-all bg-indigo-500/10 p-2 rounded-lg border border-indigo-500/20">
+                    P10... (YOUR_PAYEER_ACCOUNT)
+                  </div>
+                  <div className="text-zinc-500 text-xs mt-2 font-medium">System: Payeer</div>
+                </div>
+              )}
+            </div>
+            
+            <div className="space-y-2 mt-4">
+              <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Transaction ID / Hash</label>
+              <input
+                type="text"
+                value={transactionId}
+                onChange={(e) => setTransactionId(e.target.value)}
+                placeholder={paymentMethod === 'TRX' ? "Enter TRX Transaction Hash" : "Enter Payeer Operation ID"}
+                className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 outline-none text-zinc-200 font-mono transition-all shadow-sm placeholder-zinc-700 text-sm"
+                required
+              />
+            </div>
+          </div>
+
           <button
             type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-emerald-900/20 mt-4"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-emerald-900/20 mt-6"
+            disabled={isLoading || !transactionId || !phone}
           >
-            Submit Request
+            {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Submit Request & Transaction'}
           </button>
         </form>
       </div>
@@ -329,6 +398,78 @@ export default function UserTask() {
                className="w-full h-full object-cover relative z-10" 
                referrerPolicy="no-referrer"
              />
+          </div>
+        )}
+
+        {!isError && (
+          <div className="mt-8 w-full space-y-4">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-sm text-left">
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                  <Wallet className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Available Balance</div>
+                  <div className="text-2xl font-bold text-zinc-100">${(taskData.balance || 0).toFixed(2)}</div>
+                </div>
+              </div>
+              
+              <div className="mt-4 pt-4 border-t border-zinc-800/50">
+                <button
+                  onClick={() => setShowWithdraw(!showWithdraw)}
+                  className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-sm font-bold transition-all"
+                >
+                  Withdraw Funds
+                </button>
+              </div>
+              
+              {showWithdraw && (
+                <div className="mt-3 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-sm">
+                  <div className="text-zinc-400 mb-2 font-medium">Minimum withdrawal amounts:</div>
+                  <div className="flex justify-between items-center bg-zinc-900 p-2 rounded-lg mb-2">
+                    <span className="text-zinc-300">TRON (TRX)</span>
+                    <span className="text-emerald-400 font-bold">$0.05</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-zinc-900 p-2 rounded-lg">
+                    <span className="text-zinc-300">Payeer</span>
+                    <span className="text-emerald-400 font-bold">$1.00</span>
+                  </div>
+                  <button 
+                    onClick={() => alert('Withdrawal request submitted! Pending admin approval.')}
+                    className="w-full mt-3 py-2 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white rounded-lg text-xs font-bold transition-all"
+                  >
+                    Request Withdrawal
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-sm text-left">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-zinc-100 font-bold">Referral Program</div>
+                  <div className="text-zinc-500 text-xs">Earn 10% from every referral</div>
+                </div>
+              </div>
+              
+              <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 flex items-center justify-between">
+                <div className="truncate text-xs font-mono text-zinc-400 select-all mr-3">
+                  https://t.me/YourBotName?start={telegramId}
+                </div>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(`https://t.me/YourBotName?start=${telegramId}`);
+                    alert('Referral link copied!');
+                  }}
+                  className="p-2 bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition-colors shrink-0"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
         )}
         

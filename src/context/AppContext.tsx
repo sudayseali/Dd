@@ -8,6 +8,7 @@ interface AppContextType {
   isAdmin: boolean;
   tgUser: any | null;
   isReady: boolean;
+  startParam: string | null;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -16,6 +17,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [telegramId, setTelegramId] = useState<string | null>(null);
   const [tgUser, setTgUser] = useState<any | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [startParam, setStartParam] = useState<string | null>(null);
 
   useEffect(() => {
     let timeoutId: any;
@@ -26,6 +28,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (webApp) {
         webApp.expand();
         
+        if (webApp.initDataUnsafe?.start_param) {
+          setStartParam(webApp.initDataUnsafe.start_param);
+        }
+
         // Sometimes user id is populated shortly after init
         const user = webApp.initDataUnsafe?.user;
         if (user && user.id) {
@@ -42,9 +48,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       try {
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const initDataRaw = hashParams.get('tgWebAppData');
+        const legacyStartParam = hashParams.get('tgWebAppStartParam');
+        
+        if (legacyStartParam) {
+           setStartParam(legacyStartParam);
+        }
+
         if (initDataRaw) {
           const params = new URLSearchParams(initDataRaw);
           const userStr = params.get('user');
+          const sp = params.get('start_param');
+          if (sp) setStartParam(sp);
+
           if (userStr) {
             const userObj = JSON.parse(decodeURIComponent(userStr));
             if (userObj && userObj.id) {
@@ -75,7 +90,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const isAdmin = telegramId ? ADMIN_IDS.includes(telegramId) : false;
 
   return (
-    <AppContext.Provider value={{ telegramId, isAdmin, tgUser, isReady }}>
+    <AppContext.Provider value={{ telegramId, isAdmin, tgUser, isReady, startParam }}>
       {children}
     </AppContext.Provider>
   );

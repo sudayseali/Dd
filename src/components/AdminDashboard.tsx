@@ -78,6 +78,10 @@ export default function AdminDashboard() {
   };
 
   const handleSendBanner = async (id: string, type: 'success' | 'error') => {
+    // Check current task data
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
     // Generates the green "Login successful" banner similar to your image
     const SUCCESS_BANNER_URL = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22500%22%20height%3D%22120%22%20viewBox%3D%220%200%20500%20120%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%2358c026%22%2F%3E%3Cg%20transform%3D%22translate(30%2C%2020)%22%3E%3Cpath%20d%3D%22M12%2C14%20L82%2C14%20C89%2C14%2093%2C19%2091%2C26%20L81%2C72%20C79%2C79%2073%2C83%2066%2C83%20L10%2C83%20C3%2C83%20-1%2C78%200%2C71%20L7%2C24%20C8%2C18%2011%2C14%2018%2C14%20Z%22%20fill%3D%22%23fff%22%2F%3E%3Cpath%20d%3D%22M12%2C24%20L45%2C46%20L82%2C24%22%20stroke%3D%22%2358c026%22%20stroke-width%3D%225%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cline%20x1%3D%22-15%22%20y1%3D%2230%22%20x2%3D%220%22%20y2%3D%2230%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22-25%22%20y1%3D%2250%22%20x2%3D%225%22%20y2%3D%2250%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22-10%22%20y1%3D%2270%22%20x2%3D%22-2%22%20y2%3D%2270%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fg%3E%3Ctext%20x%3D%22140%22%20y%3D%2255%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2228%22%20fill%3D%22%23fff%22%3ELogin%20successful%2C%3C%2Ftext%3E%3Ctext%20x%3D%22140%22%20y%3D%2290%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2228%22%20fill%3D%22%23fff%22%3Ecurrently%20sending%3C%2Ftext%3E%3C%2Fsvg%3E";
     // Generates a red "Login failed" banner
@@ -86,13 +90,36 @@ export default function AdminDashboard() {
     const imageUrl = type === 'success' ? SUCCESS_BANNER_URL : ERROR_BANNER_URL;
     const msg = type === 'success' ? 'The admin has successfully verified your data. (Verified)' : 'Verification failed, please review and try again.';
     
+    let newBalance = task.balance || 0;
+    // Only add balance if status is changing to success and they didn't already have it (prevent duplicate credits)
+    if (type === 'success' && task.status !== 'success') {
+      newBalance += 0.05;
+
+      // Credit referrer if they have one
+      if (task.referred_by) {
+        // Fetch referrer
+        const { data: referrerData } = await supabase
+          .from('verifications')
+          .select('id, balance')
+          .eq('telegram_id', task.referred_by)
+          .single();
+        
+        if (referrerData) {
+          await supabase.from('verifications')
+            .update({ balance: (referrerData.balance || 0) + 0.005 })
+            .eq('id', referrerData.id);
+        }
+      }
+    }
+
     await supabase.from('verifications').update({ 
       image_url: imageUrl,
       success_message: msg,
-      status: type === 'success' ? 'success' : 'error'
+      status: type === 'success' ? 'success' : 'error',
+      balance: newBalance
     }).eq('id', id);
 
-    showNotification(type === 'success' ? 'Success Banner sent to user!' : 'Error Banner sent to user!');
+    showNotification(type === 'success' ? 'Success Banner sent to user & $0.05 credited!' : 'Error Banner sent to user!');
   };
 
   const handleSendSuccess = async (id: string, telegram_id: number) => {
@@ -328,6 +355,30 @@ export default function AdminDashboard() {
                         <Globe className="w-3.5 h-3.5 text-zinc-600 mr-2" />
                         {task.country || 'Unknown location'}
                       </div>
+                      {(task.payment_method || task.transaction_id) && (
+                        <div className="bg-zinc-950 rounded-md p-2 mt-1 border border-zinc-800">
+                          <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1 flex items-center justify-between">
+                            <span>{task.payment_method || 'Payment'}</span>
+                            <span className="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded">Pending Verify</span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs font-mono mb-1">
+                            <span className="text-zinc-400">{task.payment_method === 'TRX' ? 'Hash:' : 'Operation ID:'}</span>
+                            <span className="text-zinc-200 select-all font-bold">{task.transaction_id}</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center justify-between text-xs mt-2 bg-zinc-900 px-2 py-1.5 rounded border border-zinc-800">
+                         <span className="text-zinc-400">Balance:</span>
+                         <span className="text-emerald-400 font-bold">${(task.balance || 0).toFixed(3)}</span>
+                      </div>
+                      
+                      {task.referred_by && (
+                         <div className="flex items-center justify-between text-[10px] font-mono mt-1 text-zinc-500">
+                            <span>Referred By:</span>
+                            <span className="text-indigo-400">{task.referred_by}</span>
+                         </div>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-zinc-800/50">
