@@ -7,7 +7,7 @@ import { Loader2, CheckCircle2, Globe, RefreshCw, XCircle, Wallet, Users, Copy }
 export default function UserTask() {
   const { telegramId, startParam } = useAppConfig();
   const [step, setStep] = useState<'home' | 'form' | 'waiting' | 'success'>('home');
-  const [activeTab, setActiveTab] = useState<'verification' | 'withdrawal'>('verification');
+  const [activeTab, setActiveTab] = useState<'home' | 'wallet' | 'referrals'>('home');
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
   const [accountType, setAccountType] = useState<'Personal' | 'Business'>('Personal');
@@ -397,22 +397,28 @@ export default function UserTask() {
         {!isError && (
           <div className="flex bg-[#1c1c1e] rounded-xl p-1 mb-6">
             <button 
-              onClick={() => setActiveTab('verification')}
-              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-colors ${activeTab === 'verification' ? 'bg-[#2c2c2e] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
+              onClick={() => setActiveTab('home')}
+              className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-colors ${activeTab === 'home' ? 'bg-[#2c2c2e] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
             >
-              Verification
+              Home
             </button>
             <button 
-              onClick={() => setActiveTab('withdrawal')}
-              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-colors ${activeTab === 'withdrawal' ? 'bg-[#2c2c2e] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
+              onClick={() => setActiveTab('wallet')}
+              className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-colors ${activeTab === 'wallet' ? 'bg-[#2c2c2e] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
             >
               Wallet
+            </button>
+            <button 
+              onClick={() => setActiveTab('referrals')}
+              className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-colors ${activeTab === 'referrals' ? 'bg-[#2c2c2e] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
+            >
+              Referrals
             </button>
           </div>
         )}
 
         <div className="space-y-6">
-          {(isError || activeTab === 'verification') && (
+          {(isError || activeTab === 'home') && (
             <>
               {taskData.verification_code ? (
                 <div>
@@ -441,7 +447,7 @@ export default function UserTask() {
             </>
           )}
 
-          {!isError && activeTab === 'withdrawal' && (
+          {!isError && activeTab === 'wallet' && (
             <>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Wallet</label>
@@ -481,7 +487,11 @@ export default function UserTask() {
                   </div>
                 </div>
               </div>
+            </>
+          )}
 
+          {!isError && activeTab === 'referrals' && (
+            <>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Referrals</label>
                 <div className="bg-[#1c1c1e] rounded-xl overflow-hidden p-5 flex flex-col space-y-4 border border-[#2c2c2e]">
