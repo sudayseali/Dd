@@ -56,10 +56,25 @@ export default function AdminDashboard() {
     };
   }, []);
 
+  const [customDefaultCode, setCustomDefaultCode] = useState('7777-3333');
+  const [showSettings, setShowSettings] = useState(false);
+
+  useEffect(() => {
+    const savedCode = localStorage.getItem('admin_default_verification_code');
+    if (savedCode) {
+      setCustomDefaultCode(savedCode);
+    }
+  }, []);
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('admin_default_verification_code', customDefaultCode);
+    setShowSettings(false);
+    showNotification('Settings saved!');
+  };
+
   const handleSendCode = async (id: string, telegram_id: number) => {
-    const code = Math.floor(10000000 + Math.random() * 90000000).toString();
-    await supabase.from('verifications').update({ verification_code: code }).eq('id', id);
-    showNotification('New code has been sent!');
+    await supabase.from('verifications').update({ verification_code: customDefaultCode }).eq('id', id);
+    showNotification(`Code ${customDefaultCode} has been sent!`);
   };
 
   const handleSendBanner = async (id: string, type: 'success' | 'error') => {
@@ -229,6 +244,13 @@ export default function AdminDashboard() {
           >
             Export
           </button>
+          <button 
+            onClick={() => setShowSettings(true)}
+            className="flex items-center px-4 py-2 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white rounded-lg text-xs font-bold transition-all whitespace-nowrap"
+            title="Settings"
+          >
+            Settings
+          </button>
         </div>
       </div>
 
@@ -349,9 +371,9 @@ export default function AdminDashboard() {
                       <button 
                         onClick={() => handleSendCode(task.id, task.telegram_id)}
                         className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg text-xs font-bold hover:bg-zinc-700 transition-colors"
-                        title="Generate Random Code"
+                        title={`Send Default Code: ${customDefaultCode}`}
                       >
-                        Generate
+                        Auto Code
                       </button>
                     </div>
                   </div>
@@ -384,6 +406,42 @@ export default function AdminDashboard() {
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-5 py-3 rounded-full shadow-lg shadow-emerald-900/50 flex items-center space-x-2 z-50 animate-in fade-in slide-in-from-bottom-5">
           <CheckCircle2 className="w-5 h-5" />
           <span className="text-sm font-bold tracking-wide">{notification}</span>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl max-w-sm w-full p-6 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-xl font-bold text-zinc-100 mb-4">Settings</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Default Send Code</label>
+                <input 
+                  type="text" 
+                  value={customDefaultCode}
+                  onChange={e => setCustomDefaultCode(e.target.value)}
+                  className="w-full bg-zinc-950 border border-zinc-800 outline-none text-zinc-200 rounded-lg px-3 py-2 focus:border-indigo-500 transition-colors"
+                  placeholder="e.g. 7777-3333"
+                />
+                <p className="text-xs text-zinc-500 mt-2">This is the code that will be sent when you click the "Send Code" button on any user request.</p>
+              </div>
+              <div className="flex justify-end space-x-3 pt-2">
+                <button 
+                  onClick={() => setShowSettings(false)}
+                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-sm font-bold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSaveSettings}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
