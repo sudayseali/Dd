@@ -54,7 +54,7 @@ function AppContent() {
 
   // Active App (In Telegram)
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-200 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
+    <div className="min-h-[100dvh] bg-black text-white font-sans selection:bg-blue-500/30 selection:text-blue-200">
       {isAdmin ? <AdminDashboard /> : <UserTask />}
     </div>
   );

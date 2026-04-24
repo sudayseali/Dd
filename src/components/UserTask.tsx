@@ -162,63 +162,63 @@ export default function UserTask() {
 
   if (step === 'home') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 text-center max-w-sm mx-auto">
-        <div className="w-20 h-20 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mb-6 shadow-2xl">
-          <Globe className="w-10 h-10 text-emerald-500" />
+      <div className="flex flex-col items-center justify-center min-h-[100dvh] p-6 text-center max-w-sm mx-auto bg-black text-white">
+        <div className="w-24 h-24 bg-[#1c1c1e] rounded-[2rem] flex items-center justify-center mb-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-blue-500/10"></div>
+          <Globe className="w-12 h-12 text-blue-500 relative z-10" />
         </div>
-        <h1 className="text-2xl font-bold mb-3 text-zinc-100 tracking-tight">Access Verification</h1>
-        <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
+        <h1 className="text-3xl font-bold mb-3 tracking-tight">Access Verification</h1>
+        <p className="text-gray-400 text-base mb-10 leading-relaxed px-2">
           The system needs to verify your details in order to securely issue your Access Code.
         </p>
-        <button
-          onClick={() => setStep('form')}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-8 rounded-xl transition-all w-full shadow-lg shadow-emerald-900/20"
-        >
-          Verify Now
-        </button>
+        <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-black via-black to-transparent">
+          <button
+            onClick={() => setStep('form')}
+            className="bg-blue-500 active:bg-blue-600 text-white font-semibold py-4 px-8 rounded-2xl transition-all w-full text-lg"
+          >
+            Verify Now
+          </button>
+        </div>
       </div>
     );
   }
 
   if (step === 'form') {
     return (
-      <div className="flex flex-col max-w-md mx-auto p-6 pt-12">
-        <h2 className="text-2xl font-bold mb-6 text-zinc-100 tracking-tight">Enter Details</h2>
+      <div className="flex flex-col max-w-md mx-auto p-4 pt-8 bg-black min-h-[100dvh] text-white pb-28">
+        <h2 className="text-3xl font-bold mb-6 tracking-tight px-2">Details</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Phone Number</label>
+          <div className="space-y-2 px-2">
+            <label className="block text-sm font-medium text-gray-400">Phone Number</label>
             <input
               type="tel"
               value={phone}
               onChange={handlePhoneChange}
               placeholder="+252 63 8364274"
-              className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 outline-none text-zinc-200 font-mono transition-all shadow-sm placeholder-zinc-700"
+              className="w-full px-4 py-3.5 bg-[#1c1c1e] rounded-xl focus:border-blue-500 border border-transparent focus:ring-1 focus:ring-blue-500/50 outline-none text-white font-mono transition-all placeholder-gray-600 text-lg"
               required
             />
           </div>
 
-          <div className="bg-zinc-900 p-4 rounded-xl space-y-3 text-sm border border-zinc-800 shadow-sm">
-            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-2 mb-2">
-              <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">System Detection</span>
+          <div className="bg-[#1c1c1e] rounded-xl mx-2 overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#2c2c2e] flex justify-between items-center text-sm">
+              <span className="text-gray-400">Phone</span>
+              <span className="font-mono text-white">{phone || '...'}</span>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-zinc-400">Phone</span>
-              <span className="font-mono text-zinc-200">{phone || '-'}</span>
+            <div className="px-4 py-3 border-b border-[#2c2c2e] flex justify-between items-center text-sm">
+              <span className="text-gray-400">Location</span>
+              <span className="font-medium text-blue-400">{country || 'Waiting...'}</span>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-zinc-400">Country</span>
-              <span className="font-bold text-emerald-400">{country || 'Waiting...'}</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-zinc-400">Telegram ID</span>
-              <span className="font-mono bg-zinc-950 border border-zinc-800 text-zinc-500 px-2 rounded py-0.5 tracking-widest text-xs">{telegramId}</span>
+            <div className="px-4 py-3 flex justify-between items-center text-sm">
+              <span className="text-gray-400">Telegram ID</span>
+              <span className="font-mono bg-[#2c2c2e] text-gray-300 px-2.5 rounded-md py-1 text-xs">{telegramId}</span>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Account Type</label>
-            <div className="flex space-x-4 bg-zinc-900 p-1.5 rounded-xl border border-zinc-800 shadow-sm">
-              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${accountType === 'Personal' ? 'bg-zinc-800 text-zinc-200 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'}`}>
+          <div className="space-y-2 px-2 pt-2">
+            <label className="block text-sm font-medium text-gray-400">Account Type</label>
+            <div className="flex p-1 bg-[#1c1c1e] rounded-xl">
+              <label className={`flex-1 flex items-center justify-center cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-colors ${accountType === 'Personal' ? 'bg-[#2c2c2e] text-white' : 'text-gray-500 hover:text-gray-300'}`}>
                 <input
                   type="radio"
                   name="accountType"
@@ -229,7 +229,7 @@ export default function UserTask() {
                 />
                 <span>Personal</span>
               </label>
-              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${accountType === 'Business' ? 'bg-zinc-800 text-zinc-200 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'}`}>
+              <label className={`flex-1 flex items-center justify-center cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-colors ${accountType === 'Business' ? 'bg-[#2c2c2e] text-white' : 'text-gray-500 hover:text-gray-300'}`}>
                 <input
                   type="radio"
                   name="accountType"
@@ -244,10 +244,10 @@ export default function UserTask() {
           </div>
 
           {/* Payment Section */}
-          <div className="space-y-3 pt-2">
-            <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Payment Method <span className="text-emerald-500">*</span></label>
-            <div className="flex space-x-4 bg-zinc-900 p-1.5 rounded-xl border border-zinc-800 shadow-sm">
-              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${paymentMethod === 'TRX' ? 'bg-indigo-600/20 text-indigo-400 shadow-sm border border-indigo-500/30' : 'text-zinc-500 hover:text-zinc-400 bg-zinc-800/50'}`}>
+          <div className="space-y-4 px-2 pt-4">
+            <label className="block text-sm font-medium text-gray-400">Payment Method <span className="text-red-500">*</span></label>
+            <div className="grid grid-cols-2 gap-3">
+              <label className={`flex items-center justify-center py-4 rounded-xl cursor-pointer border transition-colors ${paymentMethod === 'TRX' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-[#1c1c1e] border-[#2c2c2e] text-gray-400'}`}>
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -256,9 +256,9 @@ export default function UserTask() {
                   className="hidden"
                   onChange={(e) => setPaymentMethod(e.target.value as any)}
                 />
-                <span>TRON (TRX)</span>
+                <span className="font-semibold text-sm">TRON (TRX)</span>
               </label>
-              <label className={`flex-1 flex items-center justify-center space-x-2 cursor-pointer py-2.5 rounded-lg text-sm font-bold transition-colors ${paymentMethod === 'Payeer' ? 'bg-indigo-600/20 text-indigo-400 shadow-sm border border-indigo-500/30' : 'text-zinc-500 hover:text-zinc-400 bg-zinc-800/50'}`}>
+              <label className={`flex items-center justify-center py-4 rounded-xl cursor-pointer border transition-colors ${paymentMethod === 'Payeer' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-[#1c1c1e] border-[#2c2c2e] text-gray-400'}`}>
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -267,51 +267,53 @@ export default function UserTask() {
                   className="hidden"
                   onChange={(e) => setPaymentMethod(e.target.value as any)}
                 />
-                <span>Payeer</span>
+                <span className="font-semibold text-sm">Payeer</span>
               </label>
             </div>
 
-            <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 shadow-sm space-y-3 mt-2">
-              <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1 border-b border-zinc-800/50 pb-2">
-                Send Payment To:
+            <div className="bg-[#1c1c1e] p-5 rounded-xl space-y-3 mt-4 text-center border border-[#2c2c2e]">
+              <div className="text-gray-500 text-xs font-semibold uppercase tracking-widest mb-1">
+                Send Payment To
               </div>
               {paymentMethod === 'TRX' ? (
-                <div className="text-center pt-2 pb-1">
-                  <div className="text-emerald-400 font-mono text-base md:text-lg font-bold select-all bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/20">
-                    TMH8nN... (YOUR_TRX_ADDRESS)
+                <div className="pt-2">
+                  <div className="text-blue-400 font-mono text-lg font-bold select-all bg-blue-500/10 p-3 rounded-xl border border-blue-500/20">
+                    TMH8nN...
                   </div>
-                  <div className="text-zinc-500 text-xs mt-2 font-medium">Network: TRC20</div>
+                  <div className="text-gray-500 text-xs mt-3 font-medium">Network: TRC20</div>
                 </div>
               ) : (
-                <div className="text-center pt-2 pb-1">
-                  <div className="text-indigo-400 font-mono text-base md:text-lg font-bold select-all bg-indigo-500/10 p-2 rounded-lg border border-indigo-500/20">
-                    P10... (YOUR_PAYEER_ACCOUNT)
+                <div className="pt-2">
+                  <div className="text-blue-400 font-mono text-lg font-bold select-all bg-blue-500/10 p-3 rounded-xl border border-blue-500/20">
+                    P10...
                   </div>
-                  <div className="text-zinc-500 text-xs mt-2 font-medium">System: Payeer</div>
+                  <div className="text-gray-500 text-xs mt-3 font-medium">System: Payeer</div>
                 </div>
               )}
             </div>
             
             <div className="space-y-2 mt-4">
-              <label className="block text-xs uppercase tracking-widest font-bold text-zinc-500">Transaction ID / Hash</label>
+              <label className="block text-sm font-medium text-gray-400">Transaction Hash / ID</label>
               <input
                 type="text"
                 value={transactionId}
                 onChange={(e) => setTransactionId(e.target.value)}
-                placeholder={paymentMethod === 'TRX' ? "Enter TRX Transaction Hash" : "Enter Payeer Operation ID"}
-                className="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 outline-none text-zinc-200 font-mono transition-all shadow-sm placeholder-zinc-700 text-sm"
+                placeholder={paymentMethod === 'TRX' ? "TRX Hash" : "Payeer Operation ID"}
+                className="w-full px-4 py-3.5 bg-[#1c1c1e] rounded-xl focus:border-blue-500 border border-[#2c2c2e] focus:ring-1 focus:ring-blue-500/50 outline-none text-white font-mono transition-all placeholder-gray-600 text-base"
                 required
               />
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-emerald-900/20 mt-6"
-            disabled={isLoading || !transactionId || !phone}
-          >
-            {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : 'Submit Request & Transaction'}
-          </button>
+          <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-black via-black to-transparent">
+            <button
+              type="submit"
+              className="bg-blue-500 active:bg-blue-600 disabled:opacity-50 disabled:active:bg-blue-500 text-white font-semibold py-4 px-8 rounded-2xl transition-all w-full text-lg flex items-center justify-center"
+              disabled={isLoading || !transactionId || !phone}
+            >
+              {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Submit Request & Transaction'}
+            </button>
+          </div>
         </form>
       </div>
     );
@@ -344,22 +346,22 @@ export default function UserTask() {
 
   if (step === 'waiting') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 text-center max-w-sm mx-auto relative cursor-default">
+      <div className="flex flex-col items-center justify-center min-h-[100dvh] p-6 text-center max-w-sm mx-auto relative cursor-default bg-black text-white">
         <button 
           onClick={handleManualRefresh}
           disabled={isLoading}
-          className="absolute top-8 right-6 p-2 bg-zinc-900 border border-zinc-800 rounded-full text-zinc-400 hover:text-emerald-500 hover:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="absolute top-6 right-6 p-2.5 bg-[#1c1c1e] rounded-full text-gray-400 hover:text-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-[#2c2c2e]"
           title="Refresh Status"
         >
           <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
         </button>
-        <div className="w-20 h-20 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mb-6 relative shadow-2xl">
-          <div className="absolute inset-0 bg-emerald-500/5 rounded-2xl animate-pulse"></div>
-          <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+        <div className="w-24 h-24 bg-[#1c1c1e] rounded-[2rem] flex items-center justify-center mb-8 relative shadow-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-blue-500/10 animate-pulse"></div>
+          <Loader2 className="w-10 h-10 text-blue-500 animate-spin relative z-10" />
         </div>
-        <h2 className="text-xl font-bold text-zinc-100 mb-2">Processing...</h2>
-        <p className="text-zinc-500 text-sm leading-relaxed">
-          Your request is being securely verified by the admin. Please stay here while we verify you. If it takes too long, tap the refresh icon 🔁 above.
+        <h2 className="text-2xl font-bold mb-3 tracking-tight">Processing</h2>
+        <p className="text-gray-400 text-base leading-relaxed px-2">
+          Your request is being securely verified by the admin. Please wait here. Tap the refresh icon 🔁 above to check for updates.
         </p>
       </div>
     );
@@ -369,29 +371,30 @@ export default function UserTask() {
     const isError = taskData.status === 'error';
 
     return (
-      <div className="flex flex-col items-center px-6 pt-12 max-w-[340px] mx-auto text-center pb-8">
-        <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mt-4 shadow-2xl ${isError ? 'bg-red-500/10 border border-red-500/20 text-red-500 shadow-red-900/20' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 shadow-emerald-900/20'}`}>
-          {isError ? <XCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10" />}
+      <div className="flex flex-col items-center px-4 pt-12 max-w-md mx-auto text-center pb-28 bg-black min-h-[100dvh] text-white">
+        <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center mb-6 shadow-2xl relative overflow-hidden ${isError ? 'bg-[#1c1c1e]' : 'bg-[#1c1c1e]'}`}>
+          <div className={`absolute inset-0 ${isError ? 'bg-red-500/10' : 'bg-green-500/10'}`}></div>
+          {isError ? <XCircle className="w-12 h-12 text-red-500 relative z-10" /> : <CheckCircle2 className="w-12 h-12 text-green-500 relative z-10" />}
         </div>
         
-        <h3 className="text-xl font-bold text-zinc-100 tracking-tight">{isError ? 'Verification Failed' : 'Verified Successfully'}</h3>
-        <p className="text-sm text-zinc-400 mt-2 px-4 mb-8 leading-relaxed">
+        <h3 className="text-2xl font-bold tracking-tight">{isError ? 'Verification Failed' : 'Verified Successfully'}</h3>
+        <p className="text-base text-gray-400 mt-3 px-4 mb-8 leading-relaxed">
           {taskData.success_message || (isError ? 'Verification failed, please review and try again.' : 'The admin has successfully verified your data. (Verified)')}
         </p>
 
         {taskData.verification_code ? (
-          <div className={`w-full p-5 bg-zinc-900 border ${isError ? 'border-red-500/20' : 'border-emerald-500/20'} rounded-2xl shadow-lg relative overflow-hidden`}>
-            <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r ${isError ? 'from-red-400 to-rose-500' : 'from-emerald-400 to-teal-500'}`}></div>
-            <div className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-2">Your Access Code</div>
-            <div className={`text-3xl font-mono tracking-[0.2em] font-bold ${isError ? 'text-red-400' : 'text-emerald-400'}`}>
+          <div className={`w-full p-6 bg-[#1c1c1e] border ${isError ? 'border-red-500/20' : 'border-[#2c2c2e]'} rounded-2xl shadow-lg relative overflow-hidden mb-6`}>
+            <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r ${isError ? 'from-red-500 to-red-400' : 'from-green-500 to-green-400'}`}></div>
+            <div className="text-xs uppercase tracking-widest font-semibold text-gray-500 mb-2">Access Code</div>
+            <div className={`text-4xl font-mono tracking-[0.15em] font-bold ${isError ? 'text-red-400' : 'text-green-500'}`}>
               {taskData.verification_code}
             </div>
           </div>
         ) : null}
 
         {taskData.image_url && (
-          <div className="mt-6 w-full h-40 bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative shadow-inner">
-             <div className="absolute inset-0 flex items-center justify-center text-[10px] text-zinc-600 uppercase tracking-widest font-bold z-0">Attached Image</div>
+          <div className="w-full h-48 bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl overflow-hidden relative shadow-inner mb-6">
+             <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-600 uppercase tracking-widest font-semibold z-0">Evidence</div>
              <img 
                src={taskData.image_url} 
                alt="Verification Evidence" 
@@ -402,41 +405,41 @@ export default function UserTask() {
         )}
 
         {!isError && (
-          <div className="mt-8 w-full space-y-4">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-sm text-left">
-              <div className="flex items-center space-x-3 mb-2">
-                <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl">
-                  <Wallet className="w-5 h-5" />
+          <div className="w-full space-y-4">
+            <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl p-5 shadow-sm text-left">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
+                  <Wallet className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Available Balance</div>
-                  <div className="text-2xl font-bold text-zinc-100">${(taskData.balance || 0).toFixed(2)}</div>
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-widest">Available Balance</div>
+                  <div className="text-3xl font-bold text-white">${(taskData.balance || 0).toFixed(2)}</div>
                 </div>
               </div>
               
-              <div className="mt-4 pt-4 border-t border-zinc-800/50">
+              <div className="pt-4 border-t border-[#2c2c2e]">
                 <button
                   onClick={() => setShowWithdraw(!showWithdraw)}
-                  className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-sm font-bold transition-all"
+                  className="w-full py-3.5 bg-[#2c2c2e] hover:bg-[#3c3c3e] text-white rounded-xl text-base font-semibold transition-all"
                 >
                   Withdraw Funds
                 </button>
               </div>
               
               {showWithdraw && (
-                <div className="mt-3 bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-sm">
-                  <div className="text-zinc-400 mb-2 font-medium">Minimum withdrawal amounts:</div>
-                  <div className="flex justify-between items-center bg-zinc-900 p-2 rounded-lg mb-2">
-                    <span className="text-zinc-300">TRON (TRX)</span>
-                    <span className="text-emerald-400 font-bold">$0.05</span>
+                <div className="mt-4 bg-black p-4 rounded-xl border border-[#2c2c2e] text-sm">
+                  <div className="text-gray-400 mb-3 font-medium">Minimum withdrawal amounts:</div>
+                  <div className="flex justify-between items-center bg-[#1c1c1e] p-3 rounded-xl mb-2">
+                    <span className="text-white font-medium">TRON (TRX)</span>
+                    <span className="text-green-500 font-bold">$0.05</span>
                   </div>
-                  <div className="flex justify-between items-center bg-zinc-900 p-2 rounded-lg">
-                    <span className="text-zinc-300">Payeer</span>
-                    <span className="text-emerald-400 font-bold">$1.00</span>
+                  <div className="flex justify-between items-center bg-[#1c1c1e] p-3 rounded-xl">
+                    <span className="text-white font-medium">Payeer</span>
+                    <span className="text-green-500 font-bold">$1.00</span>
                   </div>
                   <button 
                     onClick={() => alert('Withdrawal request submitted! Pending admin approval.')}
-                    className="w-full mt-3 py-2 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white rounded-lg text-xs font-bold transition-all"
+                    className="w-full mt-4 py-3 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-xl text-sm font-semibold transition-all"
                   >
                     Request Withdrawal
                   </button>
@@ -444,19 +447,19 @@ export default function UserTask() {
               )}
             </div>
 
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-sm text-left">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl">
-                  <Users className="w-5 h-5" />
+            <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl p-5 shadow-sm text-left">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl">
+                  <Users className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-zinc-100 font-bold">Referral Program</div>
-                  <div className="text-zinc-500 text-xs">Earn 10% from every referral</div>
+                  <div className="text-white font-bold text-lg">Referral Program</div>
+                  <div className="text-gray-400 text-sm">Earn 10% from every referral</div>
                 </div>
               </div>
               
-              <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 flex items-center justify-between">
-                <div className="truncate text-xs font-mono text-zinc-400 select-all mr-3">
+              <div className="bg-black p-4 rounded-xl border border-[#2c2c2e] flex items-center justify-between">
+                <div className="truncate text-sm font-mono text-gray-300 select-all mr-4">
                   https://t.me/YourBotName?start={telegramId}
                 </div>
                 <button 
@@ -464,25 +467,27 @@ export default function UserTask() {
                     navigator.clipboard.writeText(`https://t.me/YourBotName?start=${telegramId}`);
                     alert('Referral link copied!');
                   }}
-                  className="p-2 bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 transition-colors shrink-0"
+                  className="p-2.5 bg-[#2c2c2e] text-white rounded-xl hover:bg-[#3c3c3e] transition-colors shrink-0"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-5 h-5" />
                 </button>
               </div>
             </div>
           </div>
         )}
         
-        <button
-          onClick={() => {
-            setStep('home');
-            setPhone('');
-            setCountry('');
-          }}
-          className="mt-8 w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 rounded-xl text-sm font-bold transition-all"
-        >
-          Return Home
-        </button>
+        <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-black via-black to-transparent">
+          <button
+            onClick={() => {
+              setStep('home');
+              setPhone('');
+              setCountry('');
+            }}
+            className="w-full py-4 bg-[#2c2c2e] hover:bg-[#3c3c3e] text-white rounded-2xl text-lg font-semibold transition-all"
+          >
+            Return Home
+          </button>
+        </div>
       </div>
     );
   }
