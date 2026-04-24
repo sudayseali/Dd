@@ -7,6 +7,7 @@ import { Loader2, CheckCircle2, Globe, RefreshCw, XCircle, Wallet, Users, Copy }
 export default function UserTask() {
   const { telegramId, startParam } = useAppConfig();
   const [step, setStep] = useState<'home' | 'form' | 'waiting' | 'success'>('home');
+  const [activeTab, setActiveTab] = useState<'verification' | 'withdrawal'>('verification');
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
   const [accountType, setAccountType] = useState<'Personal' | 'Business'>('Personal');
@@ -382,7 +383,7 @@ export default function UserTask() {
     return (
       <div className="flex flex-col max-w-md mx-auto p-4 pt-8 bg-black min-h-[100dvh] text-white pb-28">
         
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-6">
           <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative shadow-2xl overflow-hidden bg-[#1c1c1e]">
             <div className={`absolute inset-0 ${isError ? 'bg-red-500/20' : 'bg-blue-500/20'}`}></div>
             {isError ? <XCircle className="w-10 h-10 text-red-500 relative z-10" /> : <CheckCircle2 className="w-10 h-10 text-blue-500 relative z-10" />}
@@ -393,90 +394,108 @@ export default function UserTask() {
           </p>
         </div>
 
-        <div className="space-y-6">
-          {taskData.verification_code ? (
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Access Code</label>
-              <div className="bg-[#1c1c1e] rounded-xl overflow-hidden p-6 flex justify-center">
-                <div className={`text-5xl font-mono tracking-widest font-bold ${isError ? 'text-red-500' : 'text-blue-500'} select-all`}>
-                  {taskData.verification_code}
-                </div>
-              </div>
-            </div>
-          ) : null}
+        {!isError && (
+          <div className="flex bg-[#1c1c1e] rounded-xl p-1 mb-6">
+            <button 
+              onClick={() => setActiveTab('verification')}
+              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-colors ${activeTab === 'verification' ? 'bg-[#2c2c2e] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
+            >
+              Verification
+            </button>
+            <button 
+              onClick={() => setActiveTab('withdrawal')}
+              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-colors ${activeTab === 'withdrawal' ? 'bg-[#2c2c2e] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
+            >
+              Wallet
+            </button>
+          </div>
+        )}
 
-          {taskData.image_url && (
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Evidence Image</label>
-              <div className="bg-[#1c1c1e] rounded-xl overflow-hidden relative" style={{ paddingTop: '56.25%' }}>
-                 <img 
-                   src={taskData.image_url} 
-                   alt="Verification Evidence" 
-                   className="absolute inset-0 w-full h-full object-cover" 
-                   referrerPolicy="no-referrer"
-                 />
-              </div>
-            </div>
+        <div className="space-y-6">
+          {(isError || activeTab === 'verification') && (
+            <>
+              {taskData.verification_code ? (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Access Code</label>
+                  <div className="bg-[#1c1c1e] rounded-xl overflow-hidden p-6 flex justify-center border border-[#2c2c2e] shadow-lg">
+                    <div className={`text-5xl font-mono tracking-widest font-bold ${isError ? 'text-red-500' : 'text-blue-500'} select-all`}>
+                      {taskData.verification_code}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {taskData.image_url && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Evidence Image</label>
+                  <div className="bg-[#1c1c1e] rounded-xl overflow-hidden relative border border-[#2c2c2e]" style={{ paddingTop: '56.25%' }}>
+                     <img 
+                       src={taskData.image_url} 
+                       alt="Verification Evidence" 
+                       className="absolute inset-0 w-full h-full object-cover px-1 py-1 rounded" 
+                       referrerPolicy="no-referrer"
+                     />
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
-          {!isError && (
+          {!isError && activeTab === 'withdrawal' && (
             <>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Wallet</label>
-                <div className="bg-[#1c1c1e] rounded-xl overflow-hidden">
-                  <div className="p-4 flex items-center justify-between border-b border-[#2c2c2e]">
+                <div className="bg-[#1c1c1e] rounded-xl overflow-hidden shadow-lg border border-[#2c2c2e]">
+                  <div className="p-5 flex items-center justify-between border-b border-[#2c2c2e] bg-gradient-to-r from-[#1c1c1e] to-[#252528]">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                        <Wallet className="w-5 h-5 text-green-500" />
+                      <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
+                        <Wallet className="w-6 h-6 text-green-500" />
                       </div>
-                      <span className="text-white text-base">Available Balance</span>
+                      <div>
+                        <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Available Balance</div>
+                        <div className="text-3xl font-bold text-white tracking-tight">${(taskData.balance || 0).toFixed(2)}</div>
+                      </div>
                     </div>
-                    <span className="text-2xl font-bold text-white">${(taskData.balance || 0).toFixed(2)}</span>
                   </div>
-                  <button
-                    onClick={() => setShowWithdraw(!showWithdraw)}
-                    className="w-full py-4 text-blue-500 text-base font-medium active:bg-[#2c2c2e] transition-colors"
-                  >
-                    Withdraw Funds
-                  </button>
-                  {showWithdraw && (
-                    <div className="p-4 bg-black border-t border-[#2c2c2e]">
-                      <div className="text-gray-400 mb-3 text-xs uppercase tracking-wider font-medium">Minimum Withdrawal Requirements</div>
-                      <div className="bg-[#1c1c1e] rounded-lg overflow-hidden mb-4">
-                        <div className="flex justify-between items-center px-4 py-3 border-b border-[#2c2c2e]">
-                          <span className="text-white text-sm">TRON (TRX)</span>
-                          <span className="text-green-500 font-bold">$0.05</span>
-                        </div>
-                        <div className="flex justify-between items-center px-4 py-3">
-                          <span className="text-white text-sm">Payeer</span>
-                          <span className="text-green-500 font-bold">$1.00</span>
-                        </div>
+                  
+                  <div className="p-4 bg-black">
+                    <div className="text-gray-400 mb-3 text-xs uppercase tracking-wider font-semibold pl-1">Withdrawal Hub</div>
+                    
+                    <div className="bg-[#1c1c1e] rounded-xl overflow-hidden mb-4 border border-[#2c2c2e]">
+                      <div className="flex justify-between items-center px-4 py-3.5 border-b border-[#2c2c2e]">
+                        <span className="text-gray-300 text-sm font-medium">TRON (TRX) Min.</span>
+                        <span className="text-green-500 font-bold bg-green-500/10 px-2.5 py-1 rounded-lg text-xs">$0.05</span>
                       </div>
-                      <button 
-                        onClick={() => alert('Withdrawal request submitted! Pending admin approval.')}
-                        className="w-full py-3 bg-blue-500 active:bg-blue-600 text-white rounded-xl text-base font-semibold transition-all shadow-lg shadow-blue-500/20"
-                      >
-                        Request Withdrawal
-                      </button>
+                      <div className="flex justify-between items-center px-4 py-3.5">
+                        <span className="text-gray-300 text-sm font-medium">Payeer Min.</span>
+                        <span className="text-green-500 font-bold bg-green-500/10 px-2.5 py-1 rounded-lg text-xs">$1.00</span>
+                      </div>
                     </div>
-                  )}
+                    
+                    <button 
+                      onClick={() => alert('Withdrawal request submitted! Pending admin approval.')}
+                      className="w-full py-4 bg-blue-500 active:bg-blue-600 text-white rounded-xl text-base font-bold transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center space-x-2"
+                    >
+                      <span>Request Withdrawal</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Referrals</label>
-                <div className="bg-[#1c1c1e] rounded-xl overflow-hidden p-4 flex flex-col space-y-3 relative group">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center shrink-0">
-                      <Users className="w-5 h-5 text-purple-500" />
+                <div className="bg-[#1c1c1e] rounded-xl overflow-hidden p-5 flex flex-col space-y-4 border border-[#2c2c2e]">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+                      <Users className="w-6 h-6 text-purple-500" />
                     </div>
                     <div>
-                      <div className="text-white font-semibold text-base">Invite Friends</div>
-                      <div className="text-gray-400 text-sm mt-0.5">Earn 10% from every referral that verifies successfully.</div>
+                      <div className="text-white font-bold text-lg tracking-tight">Invite Friends</div>
+                      <div className="text-gray-400 text-sm mt-1 leading-snug">Earn 10% from every referral that verifies successfully.</div>
                     </div>
                   </div>
-                  <div className="bg-black p-3 rounded-lg flex items-center justify-between border border-[#2c2c2e]">
-                    <div className="truncate text-xs font-mono text-gray-300 select-all mr-3">
+                  <div className="bg-black p-3.5 rounded-xl flex items-center justify-between border border-[#2c2c2e]">
+                    <div className="truncate text-xs font-mono text-gray-400 select-all mr-3">
                       https://t.me/YourBotName?start={telegramId}
                     </div>
                     <button 
@@ -484,9 +503,9 @@ export default function UserTask() {
                         navigator.clipboard.writeText(`https://t.me/YourBotName?start=${telegramId}`);
                         alert('Referral link copied!');
                       }}
-                      className="p-2 bg-[#2c2c2e] text-blue-400 rounded-md hover:text-white transition-colors shrink-0"
+                      className="p-2.5 bg-[#2c2c2e] text-blue-400 rounded-lg hover:text-white transition-colors shrink-0"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
