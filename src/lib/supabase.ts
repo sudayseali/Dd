@@ -14,7 +14,7 @@ export interface SupabaseTask {
   account_type: 'Personal' | 'Business';
   verification_code?: string;
   image_url?: string;
-  status: 'waiting' | 'success';
+  status: 'waiting' | 'success' | 'error';
   success_message?: string;
   created_at: string;
   updated_at: string;

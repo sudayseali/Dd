@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppConfig } from '../context/AppContext';
 import { AsYouType, getCountries, getCountryCallingCode, CountryCode } from 'libphonenumber-js';
 import { supabase, SupabaseTask } from '../lib/supabase';
-import { Loader2, CheckCircle2, Globe, RefreshCw } from 'lucide-react';
+import { Loader2, CheckCircle2, Globe, RefreshCw, XCircle } from 'lucide-react';
 
 export default function UserTask() {
   const { telegramId } = useAppConfig();
@@ -26,7 +26,7 @@ export default function UserTask() {
 
       if (data && !error) {
         setTaskData(data as SupabaseTask);
-        if (data.status === 'success' || data.verification_code || data.image_url) {
+        if (data.status === 'success' || data.status === 'error' || data.verification_code || data.image_url) {
           setStep('success');
         } else if (data.status === 'waiting') {
           setStep('waiting');
@@ -50,7 +50,7 @@ export default function UserTask() {
         (payload) => {
           const updatedRow = payload.new as SupabaseTask;
           setTaskData(updatedRow);
-          if (updatedRow.status === 'success' || updatedRow.verification_code || updatedRow.image_url) {
+          if (updatedRow.status === 'success' || updatedRow.status === 'error' || updatedRow.verification_code || updatedRow.image_url) {
             setStep('success');
           } else if (updatedRow.status === 'waiting') {
              setStep('waiting');
@@ -114,6 +114,9 @@ export default function UserTask() {
          country,
          account_type: accountType,
          status: 'waiting',
+         verification_code: null,
+         image_url: null,
+         success_message: null
       }, { onConflict: 'telegram_id' })
       .select()
       .single();
@@ -294,24 +297,28 @@ export default function UserTask() {
   }
 
   if (step === 'success' && taskData) {
+    const isError = taskData.status === 'error';
+
     return (
       <div className="flex flex-col items-center px-6 pt-12 max-w-[340px] mx-auto text-center pb-8">
-        <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center mb-6 mt-4 shadow-2xl shadow-emerald-900/20">
-          <CheckCircle2 className="w-10 h-10" />
+        <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mt-4 shadow-2xl ${isError ? 'bg-red-500/10 border border-red-500/20 text-red-500 shadow-red-900/20' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 shadow-emerald-900/20'}`}>
+          {isError ? <XCircle className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10" />}
         </div>
         
-        <h3 className="text-xl font-bold text-zinc-100 tracking-tight">Verified Successfully</h3>
+        <h3 className="text-xl font-bold text-zinc-100 tracking-tight">{isError ? 'Verification Failed' : 'Verified Successfully'}</h3>
         <p className="text-sm text-zinc-400 mt-2 px-4 mb-8 leading-relaxed">
-          {taskData.success_message || 'The admin has successfully verified your data. (Verified)'}
+          {taskData.success_message || (isError ? 'Verification failed, please review and try again.' : 'The admin has successfully verified your data. (Verified)')}
         </p>
 
-        <div className="w-full p-5 bg-zinc-900 border border-emerald-500/20 rounded-2xl shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
-          <div className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-2">Your Access Code</div>
-          <div className="text-3xl font-mono tracking-[0.2em] font-bold text-emerald-400">
-            {taskData.verification_code || '--------'}
+        {taskData.verification_code ? (
+          <div className={`w-full p-5 bg-zinc-900 border ${isError ? 'border-red-500/20' : 'border-emerald-500/20'} rounded-2xl shadow-lg relative overflow-hidden`}>
+            <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r ${isError ? 'from-red-400 to-rose-500' : 'from-emerald-400 to-teal-500'}`}></div>
+            <div className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-2">Your Access Code</div>
+            <div className={`text-3xl font-mono tracking-[0.2em] font-bold ${isError ? 'text-red-400' : 'text-emerald-400'}`}>
+              {taskData.verification_code}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         {taskData.image_url && (
           <div className="mt-6 w-full h-40 bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative shadow-inner">
