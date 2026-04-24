@@ -117,8 +117,8 @@ export default function UserTask() {
          phone,
          country,
          account_type: accountType,
-         payment_method: paymentMethod,
-         transaction_id: transactionId,
+         payment_method: null,
+         transaction_id: null,
          status: 'waiting',
          verification_code: null,
          image_url: null,
@@ -133,7 +133,7 @@ export default function UserTask() {
       try {
         const TELEGRAM_BOT_TOKEN = "8791737110:AAG5j0C3FDsubXAbvYsN1t9zMQWa_oOb-Tw";
         const ADMIN_CHAT_ID = "5806129562"; // Your Admin Telegram ID
-        const message = `🚨 <b>New Verification Request!</b>\n\n<b>ID:</b> <code>${telegramId}</code>\n<b>Phone:</b> ${phone}\n<b>Location:</b> ${country}\n<b>Type:</b> ${accountType}\n<b>Method:</b> ${paymentMethod}\n<b>TxID:</b> <code>${transactionId}</code>\n\n<i>Open the Admin Panel to verify payment and issue a code.</i>`;
+        const message = `🚨 <b>New Verification Request!</b>\n\n<b>ID:</b> <code>${telegramId}</code>\n<b>Phone:</b> ${phone}\n<b>Location:</b> ${country}\n<b>Type:</b> ${accountType}\n\n<i>Open the Admin Panel to verify the user and issue an access code.</i>`;
         
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: "POST",
@@ -245,83 +245,13 @@ export default function UserTask() {
             </div>
           </div>
 
-          {/* Payment Section */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Payment Method <span className="text-red-500">*</span></label>
-            <div className="bg-[#1c1c1e] rounded-xl overflow-hidden">
-              <label className="flex items-center justify-between px-4 py-4 border-b border-[#2c2c2e] cursor-pointer active:bg-[#2c2c2e] transition-colors">
-                <span className="text-white text-base font-medium">TRON (TRX)</span>
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'TRX' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
-                  {paymentMethod === 'TRX' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
-                </div>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="TRX"
-                  checked={paymentMethod === 'TRX'}
-                  className="hidden"
-                  onChange={(e) => setPaymentMethod(e.target.value as any)}
-                />
-              </label>
-              <label className="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-[#2c2c2e] transition-colors">
-                <span className="text-white text-base font-medium">Payeer</span>
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'Payeer' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
-                  {paymentMethod === 'Payeer' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
-                </div>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="Payeer"
-                  checked={paymentMethod === 'Payeer'}
-                  className="hidden"
-                  onChange={(e) => setPaymentMethod(e.target.value as any)}
-                />
-              </label>
-            </div>
-
-            <div className="mt-4 bg-[#1c1c1e] rounded-xl overflow-hidden">
-              <div className="p-5 text-center border-b border-[#2c2c2e]">
-                <div className="text-gray-400 text-xs font-medium mb-3 uppercase tracking-wider">
-                  Send Payment To
-                </div>
-                {paymentMethod === 'TRX' ? (
-                  <div>
-                    <div className="text-blue-400 font-mono text-xl font-bold select-all tracking-tight">
-                      TMH8nN...
-                    </div>
-                    <div className="text-gray-500 text-sm mt-2">Network: TRC20</div>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="text-blue-400 font-mono text-xl font-bold select-all tracking-tight">
-                      P10...
-                    </div>
-                    <div className="text-gray-500 text-sm mt-2">System: Payeer</div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="p-4">
-                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Transaction Hash / Target ID</label>
-                <input
-                  type="text"
-                  value={transactionId}
-                  onChange={(e) => setTransactionId(e.target.value)}
-                  placeholder={paymentMethod === 'TRX' ? "Paste TRX Hash..." : "Paste Payeer Operation ID..."}
-                  className="w-full bg-[#2c2c2e] rounded-lg px-4 py-3 outline-none text-white font-mono placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 transition-all text-sm"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
           <div className="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-gradient-to-t from-black via-black to-transparent backdrop-blur-[2px]">
             <button
               type="submit"
               className="bg-blue-500 active:bg-blue-600 disabled:opacity-50 disabled:active:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl transition-all w-full text-lg flex items-center justify-center shadow-lg shadow-blue-500/20"
-              disabled={isLoading || !transactionId || !phone}
+              disabled={isLoading || !phone}
             >
-              {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Confirm Payment & Verify'}
+              {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Confirm & Verify'}
             </button>
           </div>
         </form>
@@ -477,10 +407,52 @@ export default function UserTask() {
                         <span className="text-green-500 font-bold bg-green-500/10 px-2.5 py-1 rounded-lg text-xs">$1.00</span>
                       </div>
                     </div>
+
+                    <div className="bg-[#1c1c1e] rounded-xl overflow-hidden mb-4 border border-[#2c2c2e]">
+                      <label className="flex items-center justify-between px-4 py-3 border-b border-[#2c2c2e] cursor-pointer active:bg-[#2c2c2e] transition-colors">
+                        <span className="text-white text-sm font-medium">Withdraw to TRON (TRX)</span>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'TRX' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
+                          {paymentMethod === 'TRX' && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                        </div>
+                        <input
+                          type="radio"
+                          name="withdrawalMethod"
+                          value="TRX"
+                          checked={paymentMethod === 'TRX'}
+                          className="hidden"
+                          onChange={(e) => setPaymentMethod(e.target.value as any)}
+                        />
+                      </label>
+                      <label className="flex items-center justify-between px-4 py-3 cursor-pointer active:bg-[#2c2c2e] transition-colors">
+                        <span className="text-white text-sm font-medium">Withdraw to Payeer</span>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'Payeer' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
+                          {paymentMethod === 'Payeer' && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                        </div>
+                        <input
+                          type="radio"
+                          name="withdrawalMethod"
+                          value="Payeer"
+                          checked={paymentMethod === 'Payeer'}
+                          className="hidden"
+                          onChange={(e) => setPaymentMethod(e.target.value as any)}
+                        />
+                      </label>
+                    </div>
+
+                    <div className="mb-4">
+                      <input
+                        type="text"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        placeholder={paymentMethod === 'TRX' ? "Enter TRX Wallet Address..." : "Enter Payeer Account..."}
+                        className="w-full bg-[#1c1c1e] border border-[#2c2c2e] rounded-xl px-4 py-3.5 outline-none text-white font-mono placeholder-gray-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm"
+                      />
+                    </div>
                     
                     <button 
                       onClick={() => alert('Withdrawal request submitted! Pending admin approval.')}
-                      className="w-full py-4 bg-blue-500 active:bg-blue-600 text-white rounded-xl text-base font-bold transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center space-x-2"
+                      disabled={!transactionId || taskData.balance === 0}
+                      className="w-full py-4 bg-blue-500 active:bg-blue-600 disabled:opacity-50 disabled:active:bg-blue-500 text-white rounded-xl text-base font-bold transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center space-x-2"
                     >
                       <span>Request Withdrawal</span>
                     </button>
