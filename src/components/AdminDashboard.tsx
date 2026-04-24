@@ -184,16 +184,16 @@ export default function AdminDashboard() {
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8 pb-20">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#2c2c2e] pb-6">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <ShieldCheck className="w-6 h-6 text-emerald-500" />
-            <h2 className="text-2xl font-bold text-zinc-100 tracking-tight">Admin Secure Node</h2>
+            <h2 className="text-2xl font-bold text-white tracking-tight">Admin Secure Node</h2>
           </div>
-          <p className="text-sm text-zinc-400">Control Center & User Verification Management</p>
+          <p className="text-sm text-gray-400">Control Center & User Verification Management</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-mono text-zinc-400">
+          <div className="flex items-center px-3 py-1.5 bg-[#1c1c1e] border border-[#2c2c2e] rounded-lg text-xs font-mono text-gray-400">
             <Activity className="w-3.5 h-3.5 text-emerald-500 mr-2 animate-pulse" />
             System Live
           </div>
@@ -202,16 +202,16 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex items-center justify-between">
+        <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl p-5 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Total Users</p>
-            <p className="text-3xl font-bold text-zinc-100">{stats.total}</p>
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Total Users</p>
+            <p className="text-3xl font-bold text-white">{stats.total}</p>
           </div>
-          <div className="w-12 h-12 rounded-full bg-zinc-800/50 flex items-center justify-center">
-            <Users className="w-6 h-6 text-zinc-400" />
+          <div className="w-12 h-12 rounded-full bg-[#2c2c2e] flex items-center justify-center">
+            <Users className="w-6 h-6 text-gray-400" />
           </div>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex items-center justify-between">
+        <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl p-5 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-amber-500/80 uppercase tracking-widest mb-1">Pending Tasks</p>
             <p className="text-3xl font-bold text-amber-500">{stats.pending}</p>
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
             <FileText className="w-6 h-6 text-amber-500" />
           </div>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex items-center justify-between">
+        <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl p-5 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-emerald-500/80 uppercase tracking-widest mb-1">Verified</p>
             <p className="text-3xl font-bold text-emerald-500">{stats.success}</p>
@@ -232,48 +232,48 @@ export default function AdminDashboard() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-zinc-900 p-2 rounded-xl border border-zinc-800">
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-[#1c1c1e] p-2 rounded-2xl border border-[#2c2c2e]">
         <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input 
             type="text" 
             placeholder="Search ID, phone, or country..." 
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full bg-zinc-950 border-none outline-none text-sm text-zinc-200 placeholder-zinc-600 rounded-lg pl-10 pr-4 py-2.5 focus:ring-1 focus:ring-emerald-500 transition-shadow"
+            className="w-full bg-black border-none outline-none text-sm text-gray-200 placeholder-gray-600 rounded-xl pl-10 pr-4 py-3 focus:ring-1 focus:ring-emerald-500 transition-shadow"
           />
         </div>
         <div className="flex w-full sm:w-auto items-center space-x-2">
-          <div className="flex w-full sm:w-auto p-1 bg-zinc-950 rounded-lg">
+          <div className="flex w-full sm:w-auto p-1 bg-black rounded-xl">
             <button 
               onClick={() => setFilter('all')}
-              className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'all' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-colors ${filter === 'all' ? 'bg-[#2c2c2e] text-white' : 'text-gray-500 hover:text-gray-300'}`}
             >
               All
             </button>
             <button 
               onClick={() => setFilter('waiting')}
-              className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'waiting' ? 'bg-zinc-800 text-amber-400' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-colors ${filter === 'waiting' ? 'bg-[#2c2c2e] text-amber-400' : 'text-gray-500 hover:text-gray-300'}`}
             >
               Pending
             </button>
             <button 
               onClick={() => setFilter('success')}
-              className={`flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${filter === 'success' ? 'bg-zinc-800 text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-colors ${filter === 'success' ? 'bg-[#2c2c2e] text-emerald-400' : 'text-gray-500 hover:text-gray-300'}`}
             >
               Success
             </button>
           </div>
           <button 
             onClick={handleExportCSV}
-            className="flex items-center px-4 py-2 bg-emerald-600/20 text-emerald-500 hover:bg-emerald-600 hover:text-white rounded-lg text-xs font-bold transition-all whitespace-nowrap"
+            className="flex items-center px-4 py-2 flex-col justify-center sm:flex-row bg-emerald-600/20 text-emerald-500 hover:bg-emerald-600 hover:text-white rounded-xl text-xs font-bold transition-all h-full min-h-[38px] whitespace-nowrap"
             title="Download CSV"
           >
             Export
           </button>
           <button 
             onClick={() => setShowSettings(true)}
-            className="flex items-center px-4 py-2 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white rounded-lg text-xs font-bold transition-all whitespace-nowrap"
+            className="flex items-center px-4 py-2 flex-col justify-center sm:flex-row bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-bold transition-all h-full min-h-[38px] whitespace-nowrap"
             title="Settings"
           >
             Settings
@@ -282,23 +282,23 @@ export default function AdminDashboard() {
       </div>
 
       {filteredTasks.length === 0 ? (
-        <div className="text-center bg-zinc-900 rounded-2xl py-16 border border-zinc-800 border-dashed">
-          <Search className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-zinc-300">No results found</h3>
-          <p className="text-zinc-600 mt-1 text-sm">There are no tasks matching your query.</p>
+        <div className="text-center bg-[#1c1c1e] rounded-2xl py-16 border border-[#2c2c2e]">
+          <Search className="w-10 h-10 text-gray-600 mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-gray-300">No results found</h3>
+          <p className="text-gray-500 mt-1 text-sm">There are no tasks matching your query.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredTasks.map(task => (
-            <div key={task.id} className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden flex flex-col group hover:border-zinc-700 transition-colors">
+            <div key={task.id} className="bg-[#1c1c1e] rounded-2xl border border-[#2c2c2e] overflow-hidden flex flex-col group transition-colors">
               {/* Card Header */}
-              <div className="p-4 border-b border-zinc-800/50 flex justify-between items-center bg-zinc-900/50">
+              <div className="p-4 border-b border-[#2c2c2e] flex justify-between items-center">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
-                    <User className="w-4 h-4 text-zinc-400" />
+                  <div className="w-8 h-8 rounded-full bg-[#2c2c2e] flex items-center justify-center">
+                    <User className="w-4 h-4 text-gray-400" />
                   </div>
                   <div>
-                    <span className="font-mono text-xs font-bold text-zinc-300 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
+                    <span className="font-mono text-xs font-bold text-gray-300 bg-black px-2 py-1 rounded border border-[#2c2c2e]">
                       ID: {task.telegram_id}
                     </span>
                   </div>
@@ -309,17 +309,17 @@ export default function AdminDashboard() {
               {/* Card Body */}
               <div className="p-5 space-y-4 flex-grow">
                 {editingId === task.id ? (
-                  <div className="space-y-3 bg-zinc-950 p-3 rounded-xl border border-zinc-800">
+                  <div className="space-y-3 bg-black p-3 rounded-xl border border-[#2c2c2e]">
                     <input 
                       type="text" 
                       defaultValue={task.phone}
                       id={`edit-phone-${task.id}`}
-                      className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:border-emerald-500 outline-none"
+                      className="w-full bg-[#1c1c1e] border border-[#2c2c2e] rounded-lg px-3 py-2 text-sm text-gray-200 focus:border-emerald-500 outline-none"
                     />
                     <select 
                       defaultValue={task.account_type} 
                       id={`edit-type-${task.id}`}
-                      className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:border-emerald-500 outline-none"
+                      className="w-full bg-[#1c1c1e] border border-[#2c2c2e] rounded-lg px-3 py-2 text-sm text-gray-200 focus:border-emerald-500 outline-none"
                     >
                       <option value="Personal">Personal</option>
                       <option value="Business">Business</option>
@@ -338,7 +338,7 @@ export default function AdminDashboard() {
                       </button>
                       <button 
                         onClick={() => setEditingId(null)}
-                        className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg text-xs font-bold transition-colors"
+                        className="bg-[#2c2c2e] hover:bg-[#3c3c3e] text-gray-300 px-4 py-2 rounded-lg text-xs font-bold transition-colors"
                       >
                         Cancel
                       </button>
@@ -347,47 +347,47 @@ export default function AdminDashboard() {
                 ) : (
                   <>
                     <div className="flex flex-col gap-2">
-                      <div className="flex items-center text-sm font-medium text-zinc-200">
-                        <Phone className="w-4 h-4 text-zinc-500 mr-2" />
+                      <div className="flex items-center text-sm font-medium text-gray-200">
+                        <Phone className="w-4 h-4 text-gray-500 mr-2" />
                         <span className="font-mono">{task.phone}</span>
                       </div>
-                      <div className="flex items-center text-xs text-zinc-500">
-                        <Globe className="w-3.5 h-3.5 text-zinc-600 mr-2" />
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Globe className="w-3.5 h-3.5 text-gray-600 mr-2" />
                         {task.country || 'Unknown location'}
                       </div>
                       {(task.payment_method || task.transaction_id) && (
-                        <div className="bg-zinc-950 rounded-md p-2 mt-1 border border-zinc-800">
-                          <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1 flex items-center justify-between">
+                        <div className="bg-black rounded-lg p-2.5 mt-1 border border-[#2c2c2e]">
+                          <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1.5 flex items-center justify-between">
                             <span>{task.payment_method || 'Payment'}</span>
                             <span className="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded">Pending Verify</span>
                           </div>
-                          <div className="flex items-center justify-between text-xs font-mono mb-1">
-                            <span className="text-zinc-400">{task.payment_method === 'TRX' ? 'Hash:' : 'Operation ID:'}</span>
-                            <span className="text-zinc-200 select-all font-bold">{task.transaction_id}</span>
+                          <div className="flex items-center justify-between text-xs font-mono">
+                            <span className="text-gray-400">{task.payment_method === 'TRX' ? 'Hash:' : 'Operation ID:'}</span>
+                            <span className="text-gray-200 select-all font-bold">{task.transaction_id}</span>
                           </div>
                         </div>
                       )}
                       
-                      <div className="flex items-center justify-between text-xs mt-2 bg-zinc-900 px-2 py-1.5 rounded border border-zinc-800">
-                         <span className="text-zinc-400">Balance:</span>
+                      <div className="flex items-center justify-between text-xs mt-2 bg-[#1c1c1e] px-2.5 py-2 rounded-lg border border-[#2c2c2e]">
+                         <span className="text-gray-400">Balance:</span>
                          <span className="text-emerald-400 font-bold">${(task.balance || 0).toFixed(3)}</span>
                       </div>
                       
                       {task.referred_by && (
-                         <div className="flex items-center justify-between text-[10px] font-mono mt-1 text-zinc-500">
+                         <div className="flex items-center justify-between text-[10px] font-mono mt-1 text-gray-500 px-1">
                             <span>Referred By:</span>
                             <span className="text-indigo-400">{task.referred_by}</span>
                          </div>
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-zinc-800/50">
-                      <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest ${task.account_type === 'Business' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#2c2c2e]">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${task.account_type === 'Business' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-[#2c2c2e] text-gray-400 border border-[#3c3c3e]'}`}>
                         {task.account_type}
                       </span>
                       <button
                         onClick={() => setEditingId(task.id)}
-                        className="text-xs text-zinc-500 hover:text-zinc-300 font-bold flex items-center transition-colors"
+                        className="text-xs text-gray-500 hover:text-gray-300 font-bold flex items-center transition-colors"
                       >
                         <Edit2 className="w-3 h-3 mr-1" /> Edit
                       </button>
@@ -397,23 +397,23 @@ export default function AdminDashboard() {
               </div>
 
               {/* Admin Actions Panel */}
-              <div className="p-4 bg-zinc-950 border-t border-zinc-800">
+              <div className="p-4 bg-black border-t border-[#2c2c2e]">
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase tracking-widest font-bold text-zinc-600">Access Control</label>
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Access Control</label>
                     <div className="flex gap-2">
                       <div className="relative flex-1">
-                        <Hash className="w-3.5 h-3.5 text-zinc-600 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                        <Hash className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
                         <input 
                           type="text" 
                           placeholder="Code" 
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-8 pr-10 py-1.5 text-sm font-mono tracking-widest text-emerald-400 focus:border-emerald-500 outline-none"
+                          className="w-full bg-[#1c1c1e] border border-[#2c2c2e] rounded-lg pl-8 pr-10 py-1.5 text-sm font-mono tracking-widest text-emerald-400 focus:border-emerald-500 outline-none"
                           value={task.verification_code || ''}
                           onChange={(e) => handleCustomCodeChangeLocally(task.id, e.target.value)}
                         />
                         <button
                           onClick={() => handleCustomCodeSave(task.id, task.verification_code || '')}
-                          className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-emerald-600/20 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-md transition-colors"
+                          className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-emerald-600/20 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-md transition-colors border border-emerald-500/20"
                           title="Send Code"
                         >
                           <Send className="w-3.5 h-3.5" />
@@ -421,7 +421,7 @@ export default function AdminDashboard() {
                       </div>
                       <button 
                         onClick={() => handleSendCode(task.id, task.telegram_id)}
-                        className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg text-xs font-bold hover:bg-zinc-700 transition-colors"
+                        className="px-3 py-1.5 bg-[#2c2c2e] border border-[#3c3c3e] text-gray-300 rounded-lg text-xs font-bold hover:bg-[#3c3c3e] transition-colors"
                         title={`Send Default Code: ${customDefaultCode}`}
                       >
                         Auto Code
@@ -432,7 +432,7 @@ export default function AdminDashboard() {
                   <div className="flex gap-2">
                     <button 
                       onClick={() => handleSendBanner(task.id, 'success')}
-                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 rounded-lg text-xs font-bold transition-colors bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20`}
+                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 rounded-lg text-xs font-bold transition-colors bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20`}
                     >
                       <ImageIcon className="w-3.5 h-3.5" />
                       <span>{task.image_url?.includes('58c026') ? 'Banner Sent' : '✅ Success Banner'}</span>
@@ -440,7 +440,7 @@ export default function AdminDashboard() {
 
                     <button 
                       onClick={() => handleSendBanner(task.id, 'error')}
-                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2 rounded-lg text-xs font-bold transition-colors bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20`}
+                      className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 rounded-lg text-xs font-bold transition-colors bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/20`}
                     >
                       <ImageIcon className="w-3.5 h-3.5" />
                       <span>{task.image_url?.includes('d32f2f') ? 'Banner Sent' : '❌ Error Banner'}</span>
@@ -463,30 +463,30 @@ export default function AdminDashboard() {
       {/* Settings Modal */}
       {showSettings && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl max-w-sm w-full p-6 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-xl font-bold text-zinc-100 mb-4">Settings</h3>
-            <div className="space-y-4">
+          <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-xl font-bold text-white mb-4">Settings</h3>
+            <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-1">Default Send Code</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Default Send Code</label>
                 <input 
                   type="text" 
                   value={customDefaultCode}
                   onChange={e => setCustomDefaultCode(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 outline-none text-zinc-200 rounded-lg px-3 py-2 focus:border-indigo-500 transition-colors"
+                  className="w-full bg-black border border-[#2c2c2e] outline-none text-white rounded-xl px-4 py-3 focus:border-indigo-500 transition-colors placeholder-gray-600 font-mono"
                   placeholder="e.g. 7777-3333"
                 />
-                <p className="text-xs text-zinc-500 mt-2">This is the code that will be sent when you click the "Send Code" button on any user request.</p>
+                <p className="text-xs text-gray-500 mt-2">This is the code that will be sent when you click the "Auto Code" button on any user request.</p>
               </div>
               <div className="flex justify-end space-x-3 pt-2">
                 <button 
                   onClick={() => setShowSettings(false)}
-                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-sm font-bold transition-colors"
+                  className="px-4 py-3 bg-[#2c2c2e] hover:bg-[#3c3c3e] text-white rounded-xl text-sm font-bold transition-colors"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleSaveSettings}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold transition-colors"
+                  className="px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold transition-colors shadow-lg shadow-indigo-500/20"
                 >
                   Save Changes
                 </button>
@@ -502,7 +502,7 @@ export default function AdminDashboard() {
 function StatusBadge({ status }: { status: string }) {
   if (status === 'waiting') {
     return (
-      <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded-md">
+      <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
         <span className="text-[10px] uppercase tracking-widest font-bold text-amber-500">Pending</span>
       </div>
@@ -510,16 +510,16 @@ function StatusBadge({ status }: { status: string }) {
   }
   if (status === 'success') {
     return (
-      <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-md">
+      <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-md">
         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
         <span className="text-[10px] uppercase tracking-widest font-bold text-emerald-500">Success</span>
       </div>
     );
   }
   return (
-    <div className="flex items-center gap-2 bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-md">
-      <div className="w-1.5 h-1.5 rounded-full bg-zinc-500"></div>
-      <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-400 capitalize">{status}</span>
+    <div className="flex items-center gap-2 bg-[#2c2c2e] border border-[#3c3c3e] px-2.5 py-1 rounded-md">
+      <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+      <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 capitalize">{status}</span>
     </div>
   );
 }

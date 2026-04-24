@@ -162,19 +162,18 @@ export default function UserTask() {
 
   if (step === 'home') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[100dvh] p-6 text-center max-w-sm mx-auto bg-black text-white">
-        <div className="w-24 h-24 bg-[#1c1c1e] rounded-[2rem] flex items-center justify-center mb-8 shadow-2xl relative overflow-hidden">
-          <div className="absolute inset-0 bg-blue-500/10"></div>
-          <Globe className="w-12 h-12 text-blue-500 relative z-10" />
+      <div className="flex flex-col items-center justify-center min-h-[100dvh] p-4 text-center max-w-sm mx-auto bg-black text-white">
+        <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[2rem] flex items-center justify-center mb-8 shadow-2xl relative overflow-hidden">
+          <Globe className="w-12 h-12 text-white relative z-10" />
         </div>
-        <h1 className="text-3xl font-bold mb-3 tracking-tight">Access Verification</h1>
-        <p className="text-gray-400 text-base mb-10 leading-relaxed px-2">
+        <h1 className="text-3xl font-bold mb-3 tracking-tight">Access Control</h1>
+        <p className="text-gray-400 text-[15px] mb-10 leading-relaxed px-2">
           The system needs to verify your details in order to securely issue your Access Code.
         </p>
-        <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-black via-black to-transparent">
+        <div className="w-full space-y-4 px-2">
           <button
             onClick={() => setStep('form')}
-            className="bg-blue-500 active:bg-blue-600 text-white font-semibold py-4 px-8 rounded-2xl transition-all w-full text-lg"
+            className="bg-blue-500 active:bg-blue-600 text-white font-semibold py-4 px-8 rounded-2xl transition-all w-full text-lg shadow-lg shadow-blue-500/20"
           >
             Verify Now
           </button>
@@ -185,40 +184,40 @@ export default function UserTask() {
 
   if (step === 'form') {
     return (
-      <div className="flex flex-col max-w-md mx-auto p-4 pt-8 bg-black min-h-[100dvh] text-white pb-28">
-        <h2 className="text-3xl font-bold mb-6 tracking-tight px-2">Details</h2>
+      <div className="flex flex-col max-w-md mx-auto p-4 pt-6 bg-black min-h-[100dvh] text-white pb-32">
+        <h2 className="text-4xl font-bold mb-6 tracking-tight px-2">Details</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2 px-2">
-            <label className="block text-sm font-medium text-gray-400">Phone Number</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={handlePhoneChange}
-              placeholder="+252 63 8364274"
-              className="w-full px-4 py-3.5 bg-[#1c1c1e] rounded-xl focus:border-blue-500 border border-transparent focus:ring-1 focus:ring-blue-500/50 outline-none text-white font-mono transition-all placeholder-gray-600 text-lg"
-              required
-            />
-          </div>
-
-          <div className="bg-[#1c1c1e] rounded-xl mx-2 overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#2c2c2e] flex justify-between items-center text-sm">
-              <span className="text-gray-400">Phone</span>
-              <span className="font-mono text-white">{phone || '...'}</span>
+          
+          <div className="bg-[#1c1c1e] rounded-xl overflow-hidden">
+            <div className="flex items-center px-4 py-4 border-b border-[#2c2c2e]">
+              <span className="text-gray-400 w-1/3 text-base">Phone</span>
+              <input
+                type="tel"
+                value={phone}
+                onChange={handlePhoneChange}
+                placeholder="+252 6x xxxxxx"
+                className="w-2/3 bg-transparent outline-none text-white font-mono text-lg placeholder-gray-600 text-right"
+                required
+              />
             </div>
-            <div className="px-4 py-3 border-b border-[#2c2c2e] flex justify-between items-center text-sm">
-              <span className="text-gray-400">Location</span>
-              <span className="font-medium text-blue-400">{country || 'Waiting...'}</span>
+            <div className="flex items-center px-4 py-4 border-b border-[#2c2c2e]">
+              <span className="text-gray-400 w-1/3 text-base">Location</span>
+              <span className="w-2/3 text-right text-blue-400 font-medium text-base truncate">{country || 'Detecting...'}</span>
             </div>
-            <div className="px-4 py-3 flex justify-between items-center text-sm">
-              <span className="text-gray-400">Telegram ID</span>
-              <span className="font-mono bg-[#2c2c2e] text-gray-300 px-2.5 rounded-md py-1 text-xs">{telegramId}</span>
+            <div className="flex items-center px-4 py-4">
+              <span className="text-gray-400 w-1/3 text-base">Telegram ID</span>
+              <span className="w-2/3 text-right font-mono text-gray-500 text-sm select-all">{telegramId}</span>
             </div>
           </div>
 
-          <div className="space-y-2 px-2 pt-2">
-            <label className="block text-sm font-medium text-gray-400">Account Type</label>
-            <div className="flex p-1 bg-[#1c1c1e] rounded-xl">
-              <label className={`flex-1 flex items-center justify-center cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-colors ${accountType === 'Personal' ? 'bg-[#2c2c2e] text-white' : 'text-gray-500 hover:text-gray-300'}`}>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Account Type</label>
+            <div className="bg-[#1c1c1e] rounded-xl overflow-hidden">
+              <label className="flex items-center justify-between px-4 py-4 border-b border-[#2c2c2e] cursor-pointer active:bg-[#2c2c2e] transition-colors">
+                <span className="text-white text-base font-medium">Personal Account</span>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${accountType === 'Personal' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
+                  {accountType === 'Personal' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
+                </div>
                 <input
                   type="radio"
                   name="accountType"
@@ -227,9 +226,12 @@ export default function UserTask() {
                   className="hidden"
                   onChange={(e) => setAccountType(e.target.value as any)}
                 />
-                <span>Personal</span>
               </label>
-              <label className={`flex-1 flex items-center justify-center cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-colors ${accountType === 'Business' ? 'bg-[#2c2c2e] text-white' : 'text-gray-500 hover:text-gray-300'}`}>
+              <label className="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-[#2c2c2e] transition-colors">
+                <span className="text-white text-base font-medium">Business Account</span>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${accountType === 'Business' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
+                  {accountType === 'Business' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
+                </div>
                 <input
                   type="radio"
                   name="accountType"
@@ -238,16 +240,19 @@ export default function UserTask() {
                   className="hidden"
                   onChange={(e) => setAccountType(e.target.value as any)}
                 />
-                <span>Business</span>
               </label>
             </div>
           </div>
 
           {/* Payment Section */}
-          <div className="space-y-4 px-2 pt-4">
-            <label className="block text-sm font-medium text-gray-400">Payment Method <span className="text-red-500">*</span></label>
-            <div className="grid grid-cols-2 gap-3">
-              <label className={`flex items-center justify-center py-4 rounded-xl cursor-pointer border transition-colors ${paymentMethod === 'TRX' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-[#1c1c1e] border-[#2c2c2e] text-gray-400'}`}>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Payment Method <span className="text-red-500">*</span></label>
+            <div className="bg-[#1c1c1e] rounded-xl overflow-hidden">
+              <label className="flex items-center justify-between px-4 py-4 border-b border-[#2c2c2e] cursor-pointer active:bg-[#2c2c2e] transition-colors">
+                <span className="text-white text-base font-medium">TRON (TRX)</span>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'TRX' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
+                  {paymentMethod === 'TRX' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
+                </div>
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -256,9 +261,12 @@ export default function UserTask() {
                   className="hidden"
                   onChange={(e) => setPaymentMethod(e.target.value as any)}
                 />
-                <span className="font-semibold text-sm">TRON (TRX)</span>
               </label>
-              <label className={`flex items-center justify-center py-4 rounded-xl cursor-pointer border transition-colors ${paymentMethod === 'Payeer' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-[#1c1c1e] border-[#2c2c2e] text-gray-400'}`}>
+              <label className="flex items-center justify-between px-4 py-4 cursor-pointer active:bg-[#2c2c2e] transition-colors">
+                <span className="text-white text-base font-medium">Payeer</span>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'Payeer' ? 'border-blue-500 bg-blue-500' : 'border-gray-500'}`}>
+                  {paymentMethod === 'Payeer' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
+                </div>
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -267,51 +275,52 @@ export default function UserTask() {
                   className="hidden"
                   onChange={(e) => setPaymentMethod(e.target.value as any)}
                 />
-                <span className="font-semibold text-sm">Payeer</span>
               </label>
             </div>
 
-            <div className="bg-[#1c1c1e] p-5 rounded-xl space-y-3 mt-4 text-center border border-[#2c2c2e]">
-              <div className="text-gray-500 text-xs font-semibold uppercase tracking-widest mb-1">
-                Send Payment To
+            <div className="mt-4 bg-[#1c1c1e] rounded-xl overflow-hidden">
+              <div className="p-5 text-center border-b border-[#2c2c2e]">
+                <div className="text-gray-400 text-xs font-medium mb-3 uppercase tracking-wider">
+                  Send Payment To
+                </div>
+                {paymentMethod === 'TRX' ? (
+                  <div>
+                    <div className="text-blue-400 font-mono text-xl font-bold select-all tracking-tight">
+                      TMH8nN...
+                    </div>
+                    <div className="text-gray-500 text-sm mt-2">Network: TRC20</div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="text-blue-400 font-mono text-xl font-bold select-all tracking-tight">
+                      P10...
+                    </div>
+                    <div className="text-gray-500 text-sm mt-2">System: Payeer</div>
+                  </div>
+                )}
               </div>
-              {paymentMethod === 'TRX' ? (
-                <div className="pt-2">
-                  <div className="text-blue-400 font-mono text-lg font-bold select-all bg-blue-500/10 p-3 rounded-xl border border-blue-500/20">
-                    TMH8nN...
-                  </div>
-                  <div className="text-gray-500 text-xs mt-3 font-medium">Network: TRC20</div>
-                </div>
-              ) : (
-                <div className="pt-2">
-                  <div className="text-blue-400 font-mono text-lg font-bold select-all bg-blue-500/10 p-3 rounded-xl border border-blue-500/20">
-                    P10...
-                  </div>
-                  <div className="text-gray-500 text-xs mt-3 font-medium">System: Payeer</div>
-                </div>
-              )}
-            </div>
-            
-            <div className="space-y-2 mt-4">
-              <label className="block text-sm font-medium text-gray-400">Transaction Hash / ID</label>
-              <input
-                type="text"
-                value={transactionId}
-                onChange={(e) => setTransactionId(e.target.value)}
-                placeholder={paymentMethod === 'TRX' ? "TRX Hash" : "Payeer Operation ID"}
-                className="w-full px-4 py-3.5 bg-[#1c1c1e] rounded-xl focus:border-blue-500 border border-[#2c2c2e] focus:ring-1 focus:ring-blue-500/50 outline-none text-white font-mono transition-all placeholder-gray-600 text-base"
-                required
-              />
+              
+              <div className="p-4">
+                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Transaction Hash / Target ID</label>
+                <input
+                  type="text"
+                  value={transactionId}
+                  onChange={(e) => setTransactionId(e.target.value)}
+                  placeholder={paymentMethod === 'TRX' ? "Paste TRX Hash..." : "Paste Payeer Operation ID..."}
+                  className="w-full bg-[#2c2c2e] rounded-lg px-4 py-3 outline-none text-white font-mono placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 transition-all text-sm"
+                  required
+                />
+              </div>
             </div>
           </div>
 
-          <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-black via-black to-transparent">
+          <div className="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-gradient-to-t from-black via-black to-transparent backdrop-blur-[2px]">
             <button
               type="submit"
-              className="bg-blue-500 active:bg-blue-600 disabled:opacity-50 disabled:active:bg-blue-500 text-white font-semibold py-4 px-8 rounded-2xl transition-all w-full text-lg flex items-center justify-center"
+              className="bg-blue-500 active:bg-blue-600 disabled:opacity-50 disabled:active:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl transition-all w-full text-lg flex items-center justify-center shadow-lg shadow-blue-500/20"
               disabled={isLoading || !transactionId || !phone}
             >
-              {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Submit Request & Transaction'}
+              {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Confirm Payment & Verify'}
             </button>
           </div>
         </form>
@@ -371,119 +380,129 @@ export default function UserTask() {
     const isError = taskData.status === 'error';
 
     return (
-      <div className="flex flex-col items-center px-4 pt-12 max-w-md mx-auto text-center pb-28 bg-black min-h-[100dvh] text-white">
-        <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center mb-6 shadow-2xl relative overflow-hidden ${isError ? 'bg-[#1c1c1e]' : 'bg-[#1c1c1e]'}`}>
-          <div className={`absolute inset-0 ${isError ? 'bg-red-500/10' : 'bg-green-500/10'}`}></div>
-          {isError ? <XCircle className="w-12 h-12 text-red-500 relative z-10" /> : <CheckCircle2 className="w-12 h-12 text-green-500 relative z-10" />}
+      <div className="flex flex-col max-w-md mx-auto p-4 pt-8 bg-black min-h-[100dvh] text-white pb-28">
+        
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative shadow-2xl overflow-hidden bg-[#1c1c1e]">
+            <div className={`absolute inset-0 ${isError ? 'bg-red-500/20' : 'bg-blue-500/20'}`}></div>
+            {isError ? <XCircle className="w-10 h-10 text-red-500 relative z-10" /> : <CheckCircle2 className="w-10 h-10 text-blue-500 relative z-10" />}
+          </div>
+          <h3 className="text-2xl font-bold tracking-tight">{isError ? 'Verification Failed' : 'Verified Successfully'}</h3>
+          <p className="text-sm text-gray-400 mt-2 px-4 text-center">
+            {taskData.success_message || (isError ? 'Verification failed, please review and try again.' : 'The admin has successfully verified your data.')}
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          {taskData.verification_code ? (
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Access Code</label>
+              <div className="bg-[#1c1c1e] rounded-xl overflow-hidden p-6 flex justify-center">
+                <div className={`text-5xl font-mono tracking-widest font-bold ${isError ? 'text-red-500' : 'text-blue-500'} select-all`}>
+                  {taskData.verification_code}
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {taskData.image_url && (
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Evidence Image</label>
+              <div className="bg-[#1c1c1e] rounded-xl overflow-hidden relative" style={{ paddingTop: '56.25%' }}>
+                 <img 
+                   src={taskData.image_url} 
+                   alt="Verification Evidence" 
+                   className="absolute inset-0 w-full h-full object-cover" 
+                   referrerPolicy="no-referrer"
+                 />
+              </div>
+            </div>
+          )}
+
+          {!isError && (
+            <>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Wallet</label>
+                <div className="bg-[#1c1c1e] rounded-xl overflow-hidden">
+                  <div className="p-4 flex items-center justify-between border-b border-[#2c2c2e]">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                        <Wallet className="w-5 h-5 text-green-500" />
+                      </div>
+                      <span className="text-white text-base">Available Balance</span>
+                    </div>
+                    <span className="text-2xl font-bold text-white">${(taskData.balance || 0).toFixed(2)}</span>
+                  </div>
+                  <button
+                    onClick={() => setShowWithdraw(!showWithdraw)}
+                    className="w-full py-4 text-blue-500 text-base font-medium active:bg-[#2c2c2e] transition-colors"
+                  >
+                    Withdraw Funds
+                  </button>
+                  {showWithdraw && (
+                    <div className="p-4 bg-black border-t border-[#2c2c2e]">
+                      <div className="text-gray-400 mb-3 text-xs uppercase tracking-wider font-medium">Minimum Withdrawal Requirements</div>
+                      <div className="bg-[#1c1c1e] rounded-lg overflow-hidden mb-4">
+                        <div className="flex justify-between items-center px-4 py-3 border-b border-[#2c2c2e]">
+                          <span className="text-white text-sm">TRON (TRX)</span>
+                          <span className="text-green-500 font-bold">$0.05</span>
+                        </div>
+                        <div className="flex justify-between items-center px-4 py-3">
+                          <span className="text-white text-sm">Payeer</span>
+                          <span className="text-green-500 font-bold">$1.00</span>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => alert('Withdrawal request submitted! Pending admin approval.')}
+                        className="w-full py-3 bg-blue-500 active:bg-blue-600 text-white rounded-xl text-base font-semibold transition-all shadow-lg shadow-blue-500/20"
+                      >
+                        Request Withdrawal
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest pl-4 mb-2">Referrals</label>
+                <div className="bg-[#1c1c1e] rounded-xl overflow-hidden p-4 flex flex-col space-y-3 relative group">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center shrink-0">
+                      <Users className="w-5 h-5 text-purple-500" />
+                    </div>
+                    <div>
+                      <div className="text-white font-semibold text-base">Invite Friends</div>
+                      <div className="text-gray-400 text-sm mt-0.5">Earn 10% from every referral that verifies successfully.</div>
+                    </div>
+                  </div>
+                  <div className="bg-black p-3 rounded-lg flex items-center justify-between border border-[#2c2c2e]">
+                    <div className="truncate text-xs font-mono text-gray-300 select-all mr-3">
+                      https://t.me/YourBotName?start={telegramId}
+                    </div>
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(`https://t.me/YourBotName?start=${telegramId}`);
+                        alert('Referral link copied!');
+                      }}
+                      className="p-2 bg-[#2c2c2e] text-blue-400 rounded-md hover:text-white transition-colors shrink-0"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
         
-        <h3 className="text-2xl font-bold tracking-tight">{isError ? 'Verification Failed' : 'Verified Successfully'}</h3>
-        <p className="text-base text-gray-400 mt-3 px-4 mb-8 leading-relaxed">
-          {taskData.success_message || (isError ? 'Verification failed, please review and try again.' : 'The admin has successfully verified your data. (Verified)')}
-        </p>
-
-        {taskData.verification_code ? (
-          <div className={`w-full p-6 bg-[#1c1c1e] border ${isError ? 'border-red-500/20' : 'border-[#2c2c2e]'} rounded-2xl shadow-lg relative overflow-hidden mb-6`}>
-            <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r ${isError ? 'from-red-500 to-red-400' : 'from-green-500 to-green-400'}`}></div>
-            <div className="text-xs uppercase tracking-widest font-semibold text-gray-500 mb-2">Access Code</div>
-            <div className={`text-4xl font-mono tracking-[0.15em] font-bold ${isError ? 'text-red-400' : 'text-green-500'}`}>
-              {taskData.verification_code}
-            </div>
-          </div>
-        ) : null}
-
-        {taskData.image_url && (
-          <div className="w-full h-48 bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl overflow-hidden relative shadow-inner mb-6">
-             <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-600 uppercase tracking-widest font-semibold z-0">Evidence</div>
-             <img 
-               src={taskData.image_url} 
-               alt="Verification Evidence" 
-               className="w-full h-full object-cover relative z-10" 
-               referrerPolicy="no-referrer"
-             />
-          </div>
-        )}
-
-        {!isError && (
-          <div className="w-full space-y-4">
-            <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl p-5 shadow-sm text-left">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
-                  <Wallet className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-widest">Available Balance</div>
-                  <div className="text-3xl font-bold text-white">${(taskData.balance || 0).toFixed(2)}</div>
-                </div>
-              </div>
-              
-              <div className="pt-4 border-t border-[#2c2c2e]">
-                <button
-                  onClick={() => setShowWithdraw(!showWithdraw)}
-                  className="w-full py-3.5 bg-[#2c2c2e] hover:bg-[#3c3c3e] text-white rounded-xl text-base font-semibold transition-all"
-                >
-                  Withdraw Funds
-                </button>
-              </div>
-              
-              {showWithdraw && (
-                <div className="mt-4 bg-black p-4 rounded-xl border border-[#2c2c2e] text-sm">
-                  <div className="text-gray-400 mb-3 font-medium">Minimum withdrawal amounts:</div>
-                  <div className="flex justify-between items-center bg-[#1c1c1e] p-3 rounded-xl mb-2">
-                    <span className="text-white font-medium">TRON (TRX)</span>
-                    <span className="text-green-500 font-bold">$0.05</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-[#1c1c1e] p-3 rounded-xl">
-                    <span className="text-white font-medium">Payeer</span>
-                    <span className="text-green-500 font-bold">$1.00</span>
-                  </div>
-                  <button 
-                    onClick={() => alert('Withdrawal request submitted! Pending admin approval.')}
-                    className="w-full mt-4 py-3 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-xl text-sm font-semibold transition-all"
-                  >
-                    Request Withdrawal
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="bg-[#1c1c1e] border border-[#2c2c2e] rounded-2xl p-5 shadow-sm text-left">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl">
-                  <Users className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-white font-bold text-lg">Referral Program</div>
-                  <div className="text-gray-400 text-sm">Earn 10% from every referral</div>
-                </div>
-              </div>
-              
-              <div className="bg-black p-4 rounded-xl border border-[#2c2c2e] flex items-center justify-between">
-                <div className="truncate text-sm font-mono text-gray-300 select-all mr-4">
-                  https://t.me/YourBotName?start={telegramId}
-                </div>
-                <button 
-                  onClick={() => {
-                    navigator.clipboard.writeText(`https://t.me/YourBotName?start=${telegramId}`);
-                    alert('Referral link copied!');
-                  }}
-                  className="p-2.5 bg-[#2c2c2e] text-white rounded-xl hover:bg-[#3c3c3e] transition-colors shrink-0"
-                >
-                  <Copy className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-black via-black to-transparent">
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-gradient-to-t from-black via-black to-transparent backdrop-blur-[2px]">
           <button
             onClick={() => {
               setStep('home');
               setPhone('');
               setCountry('');
             }}
-            className="w-full py-4 bg-[#2c2c2e] hover:bg-[#3c3c3e] text-white rounded-2xl text-lg font-semibold transition-all"
+            className="w-full py-4 bg-[#1c1c1e] active:bg-[#2c2c2e] text-blue-500 rounded-2xl text-lg font-semibold transition-all border border-[#2c2c2e]"
           >
             Return Home
           </button>
