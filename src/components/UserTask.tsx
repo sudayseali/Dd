@@ -105,7 +105,7 @@ export default function UserTask() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!telegramId || !phone || !transactionId) return;
+    if (!telegramId || !phone) return;
 
     setIsLoading(true);
     
